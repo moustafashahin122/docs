@@ -1,0 +1,108 @@
+************************************************************domain**************************************************************************************
+         domain and other must have " " except only in <attribute>
+            
+            
+            
+            
+            
+            
+**********************************************image******************************************
+
+Image size in odoo
+name="image_1920" widget="image" options="{'size': [150, 150]}"/> 
+
+
+
+
+
+**********************************************statusbar******************************************
+Before sheet
+
+   <header>
+
+                        <field name="status" widget="statusbar" options="{'clickable':'1'}" nolabel='1'/>
+                    </header>
+
+
+******************************* allow edit in tree view******************************************
+
+<tree string="invoice_product" editable='bottom' >
+<field name="invoice_id"/>
+<field name="product_id"/>
+<field name="price"/>
+<field name="count"/>
+<field name="total_price"/>
+</tree>
+
+
+*******************************using context to pass default values**********************************
+
+
+Using context to pass default values
+
+<record id="create_quotation_action" model="ir.actions.act_window">
+    <field name="name">Create Quotation</field>
+    <field name="res_model">workshop.quotation</field>
+    <field name="view_mode">form</field>
+
+   
+</record>
+ <header>
+                        <button string="Create Quotation" name="%(automotive_workshop.create_quotation_action)d" type="action" context="{'default_inspection_order_id':active_id}" view_mode="form"/>
+                    </header>
+
+******************************* context in py *******************************
+def action_quotation_send(self, cr, uid, ids, context=None):
+    .......
+    ctx.update({
+        'default_model': 'sale.order',
+        'default_res_id': ids[0],
+        'default_use_template': bool(template_id),
+        'default_template_id': template_id,
+        'default_composition_mode': 'comment',
+        'mark_so_as_sent': True
+    })
+    return {
+        'type': 'ir.actions.act_window',
+        'view_type': 'form',
+        'view_mode': 'form',
+        'res_model': 'mail.compose.message',
+        'views': [(compose_form_id, 'form')],
+        'view_id': compose_form_id,
+        'target': 'new',
+        'context': ctx,
+    }
+
+
+******************************* add chatter  *******************************
+
+
+
+
+in model
+
+    _inherit = ['mail.thread','mail.activity.mixin']
+and add tracking = True to fields
+in view after sheet
+
+                    <!-- Chatter -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+
+
+
+****************************** git ignore some files ************************************
+
+to ignore .pyc files 
+*.pyc
+
+To remove them from the repository but keep them locally, you can use the following commands:
+git rm --cached '*.pyc'
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
