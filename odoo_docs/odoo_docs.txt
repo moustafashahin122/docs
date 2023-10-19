@@ -123,9 +123,14 @@ git rm --cached '*.pyc'
     currency_id = fields.Many2one('res.currency',string="Currency") 
 
 	price = fields.Monetary(string='Price', required=True,currency_field='currency_id',tracking=True)
+              <field name="total_cheques_amount" widget="monetary" />
 
 
 ****************************** return a view from py ************************************
+    
+    
+    
+    
     def action_view_quotation(self):
         self.ensure_one()
         quotations = self.env['workshop.quotation'].search([
@@ -222,7 +227,54 @@ git rm --cached '*.pyc'
         self.ensure_one()
 
 
-****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** vs code debugger ************************************
+
+
+
+
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Odoo",
+            "type": "python",
+            "request": "launch",
+            "program": "/opt/odoo16/odoo16/odoo-bin",
+            "pythonPath": "/opt/odoo16/odoo16-venv/bin/python3",
+            "args": [
+                "-c",
+                "/etc/odoo16.conf",
+                "--dev",
+                "all",
+                "--log-level=debug",
+                "--logfile=",
+                "-d",
+                "stage",
+                "-u",
+                "wallet"
+            ],
+            "cwd": "${workspaceFolder}",
+            "env": {},
+            "envFile": "${workspaceFolder}/.env",
+            "debugOptions": [
+                "WaitOnAbnormalExit",
+                "WaitOnNormalExit",
+                "RedirectOutput"
+            ]
+        },
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
