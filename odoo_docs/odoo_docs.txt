@@ -14,6 +14,12 @@ git branch -r
 
 
 
+ /opt/odoo16/odoo16-venv/bin/python3 /opt/odoo16/odoo16/odoo-bin -c /etc/odoo16.conf --dev all --log-level=debug --logfile= -d stage -u wallet
+
+
+ /opt/odoo15/odoo15-venv/bin/python3 /opt/odoo15/odoo15/odoo-bin -c /etc/odoo15.conf -s --dev all --log-level=debug --logfile=
+
+
 ************************************************************domain**************************************************************************************
          domain and other must have " " except only in <attribute>
             
@@ -25,7 +31,8 @@ git branch -r
 **********************************************image******************************************
 
 Image size in odoo
-name="image_1920" widget="image" options="{'size': [150, 150]}"/> 
+                    <field name="image" string="Image" widget="image" options="{'size': [150, 150]}"/>
+
 
 
 
@@ -39,6 +46,9 @@ Before sheet
                         <field name="status" widget="statusbar" options="{'clickable':'1'}" nolabel='1'/>
                     </header>
 
+
+remove 
+<field name = " status"/>
 
 ******************************* allow edit in tree view******************************************
 
@@ -275,8 +285,110 @@ git rm --cached '*.pyc'
         }
     ]
 }
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ordering ************************************
+
+
+
+    _order='sequence'
+    sequence=fields.Integer(string='Sequence',default=0)
+
+
+****************************** Postgres *******************************
+
+
+
+
+
+\du list all users
+
+
+
+
+
+
+
+
+
+
+
+
+
+*********************************** ++++++++++++++++++++++++++++++++ ************************************
+In Odoo, you can add attributes to the relation in a many-to-many field using the `relation` parameter. These attributes can be used to store additional information about the relationship between records. Here's how you can add attributes to a many-to-many relationship:
+
+Let's extend the previous example with attributes for the many-to-many relationship between `Course` and `Student`. We'll add an attribute called `attendance` to store attendance information for each student in a course.
+
+```python
+from odoo import models, fields
+
+class Course(models.Model):
+    _name = 'your_module.course'
+    _description = 'Course Model'
+
+    name = fields.Char(string='Course Name', required=True)
+    students = fields.Many2many(
+        'your_module.student',
+        'course_student_rel',
+        'course_id',
+        'student_id',
+        string='Students',
+        relation='your_module.course_student_relation'  # Set the relation name
+    )
+
+class Student(models.Model):
+    _name = 'your_module.student'
+    _description = 'Student Model'
+
+    name = fields.Char(string='Student Name', required=True)
+    courses = fields.Many2many(
+        'your_module.course',
+        'course_student_rel',
+        'student_id',
+        'course_id',
+        string='Courses',
+        relation='your_module.course_student_relation'  # Set the relation name
+    )
+
+class CourseStudentRelation(models.Model):
+    _name = 'your_module.course_student_relation'
+    _description = 'Course-Student Relation'
+
+    course_id = fields.Many2one('your_module.course', string='Course')
+    student_id = fields.Many2one('your_module.student', string='Student')
+    attendance = fields.Float(string='Attendance Percentage')
+```
+
+In this extended example:
+
+1. We add a new model, `CourseStudentRelation`, to represent the many-to-many relationship between `Course` and `Student`. This model contains an additional field called `attendance` to store the attendance percentage for each student in a course.
+
+2. In the `Course` and `Student` models, we set the `relation` parameter in the `Many2many` field to specify the name of the model that defines the relationship (`'your_module.course_student_relation'`).
+
+Now you can use the `attendance` field to store and retrieve attendance information for each student in a course. For example:
+
+```python
+# Create a student
+student = self.env['your_module.student'].create({'name': 'John Doe'})
+
+# Create a course
+course = self.env['your_module.course'].create({'name': 'Mathematics'})
+
+# Add the student to the course with attendance information
+course.students = [(4, student.id, {'attendance': 90.0})]
+
+# Retrieve the attendance information for a student in a course
+attendance_percentage = student.courses.filtered(lambda c: c.id == course.id).attendance
+```
+
+This allows you to store and access attributes associated with the many-to-many relationship between `Course` and `Student`.
+
+
+
+
+
+
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
