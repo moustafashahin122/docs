@@ -526,9 +526,38 @@ This allows you to store and access attributes associated with the many-to-many 
 
 
 
-******************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+******************************** filter one2many field ************************************
+
+
+
+    step_ids= fields.One2many('contract.step',inverse_name="contract_id",string="Contract Step",store=True)
+
+    stage_step_ids= fields.One2many('contract.step',inverse_name="contract_id",string="Contract Step",compute="_compute_stage_steps_ids")
+
+
+
+    
+    @api.depends('step_ids')
+    def _compute_stage_steps_ids(self):
+        for rec in self:
+            rec.stage_step_ids=rec.step_ids.filtered_domain([('stage_id','=',rec.stage_id.id)])
+        print("*********************************************************************")
+
+****************************** errors ************************************
+from odoo.exceptions import ValidationError
+
+                raise ValidationError(_("You can't associate a contract with an active related sale order."))
+
+
+from odoo.exceptions import UserError
+                raise UserError(_("There are multiple active contracts for this sale order."))
+****************************** ++++++++++++++++++++++++++++++++ ***********************************
+
+
+
+
+
+******************************* ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
