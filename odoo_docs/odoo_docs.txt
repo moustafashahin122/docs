@@ -1,6 +1,6 @@
 
 
-
+\{\{<a.*?\}\}
 
 
 
@@ -544,20 +544,36 @@ This allows you to store and access attributes associated with the many-to-many 
         print("*********************************************************************")
 
 ****************************** errors ************************************
-from odoo.exceptions import ValidationError
+ from odoo.exceptions import ValidationError,UserError
+
+            raise UserError('Requests Created Successfully')
 
                 raise ValidationError(_("You can't associate a contract with an active related sale order."))
 
 
 from odoo.exceptions import UserError
                 raise UserError(_("There are multiple active contracts for this sale order."))
-****************************** ++++++++++++++++++++++++++++++++ ***********************************
-
-
+****************************** notification ***********************************
+                'type': 'warning',
+                
+                                'type': 'success',
+    def showwarning(self):
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'type': 'info',
+                
+                'message': _("Two-factor authentication disabled for the following user(s)"),
+                'next': {'type': 'ir.actions.act_window_close'},
+            }
+        }
 
 
 
 ******************************* ++++++++++++++++++++++++++++++++ ************************************
+html_rp=rp_temp._render_template(rp_temp.body_html,'contract.contract',[53])
+rp_temp=self.env['rp.template'].browse(3)
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
