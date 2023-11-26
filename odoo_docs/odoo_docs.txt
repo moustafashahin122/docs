@@ -3,7 +3,8 @@
 \{\{<a.*?\}\}
 
 
-
+regex 
+https://chat.openai.com/share/238ab334-2d67-445b-b477-d78c9a2347e5
 
 
 *********************************************************_ in python ****************************************************************
@@ -12,6 +13,9 @@ https://www.python-engineer.com/posts/double-single-leading-underscore/
 
 _  leading method name private not imported when "from xxx import *"
 __ leading method name add class name to it "play() in class football ==> _football__play()
+
+
+https://www.tutorialsteacher.com/python/public-private-protected-modifiers
 
 
 *********************************************************kill odoo process****************************************************************
@@ -54,6 +58,8 @@ git branch -r
 
 
  /opt/odoo15/odoo15-venv/bin/python3 /opt/odoo15/odoo15/odoo-bin -c /etc/odoo15.conf -s --dev all --log-level=debug --logfile=
+  /opt/odoo15/odoo15-venv/bin/python3 /opt/odoo15/odoo15/odoo-bin -c /etc/odoo15.conf   --log-level=debug --logfile= -d demo_15_approval  
+
 
 
 ************************************************************domain**************************************************************************************
@@ -167,6 +173,7 @@ git rm --cached '*.pyc'
 
 ****************************** monetary field ************************************
     currency_id = fields.Many2one('res.currency',string="Currency") 
+
 
 	price = fields.Monetary(string='Price', required=True,currency_field='currency_id',tracking=True)
               <field name="total_cheques_amount" widget="monetary" />
@@ -574,16 +581,292 @@ from odoo.exceptions import UserError
 ******************************* ++++++++++++++++++++++++++++++++ ************************************
 html_rp=rp_temp._render_template(rp_temp.body_html,'contract.contract',[53])
 rp_temp=self.env['rp.template'].browse(3)
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** api.constrains ************************************
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+
+class YourModel(models.Model):
+    _name = 'your.model'
+
+    field1 = fields.Char(string='Field 1')
+    field2 = fields.Char(string='Field 2')
+
+    @api.constrains('field1', 'field2')
+    def _check_at_least_one_field_has_value(self):
+        for record in self:
+            if not (record.field1 or record.field2):
+                raise ValidationError("At least one of Field 1 or Field 2 must have a value.")
+****************************** ++++++++++++++++++++++++++++++++ ***********************************
+
+<div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+
+
+
+
+******************************* uniqe ************************************
+
+    _sql_constraints = [
+        ('Unique_Contract_Partner', 'UNIQUE(contract_id,partner_id)', 'this partner already exists for this contract')
+    ]
+****************************** on line if ************************************
+value_if_true if condition else value_if_false
+
+****************************** ++++++++++++++++++++++++++++++++ ******************************
+    @api.depends('stage_step_ids.step_status')
+    def _compute_stage_complete(self):
+        self.stage_complete=True if len(self.stage_step_ids.filtered_domain([('step_status','!=','accepted')])) == 0 else False
+
+
+    stage_complete = fields.Boolean('Stage Complete',compute="_compute_stage_complete",default=False)
+
+
+************************************ ++++++++++++++++++++++++++++++++ ************************************
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <data>
+        <record id="ir_cron_scheduler_recurring_action" model="ir.cron">
+            <field name="name">Update Missing Duration</field>
+            <field name="model_id" ref="model_contract_contract" />
+            <field name="state">code</field>
+            <field name="code"> model.comput_stage_missing()</field>
+
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">True</field>
+            <field name="nextcall"
+                eval="(DateTime.now().replace(hour=22,minute=1,second=0) ).strftime('%Y-%m-%d %H:%M:%S')" />
+        </record>
+
+
+    </data>
+
+
+</odoo>
+****************************** ribbon ************************************
+                        <widget name="web_ribbon" title="illegal" bg_color="bg-danger"
+                            attrs="{'invisible': [ ('illegal', '=', False)]}" />
+****************************** ++++++++++++++++++++++++++++++++ **********************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <button name="confirm_payment_plan" type="object" string="Confirm"
+                        class="btn-secondary" attrs="{'invisible': [('stage', '!=', 'draft')]}" />
+                    <button name="generate_plan_requests" type="object" string="Generate Requests"
+                        class="btn-secondary" attrs="{'invisible': [('stage', '!=', 'confirmed')]}" />
+
+
+
+
+
+in payment plan
+
+    stage = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+    ], string='Stage',default='draft')
+
+    
+    type_id = fields.Many2one('multi.approval.type', string='Approve Type', required=True)
+    
+    
+    
+    
+    
+    def confirm_payment_plan(self):
+        for rec in self:
+            rec.stage='confirmed'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+******************************** ++++++++++++++++++++++++++++++++ ************************************
+
+                <xpath
+                    expr="//group[1]/field[@name='priceflist' or position() = 1]"
+                    position="after">
+                   <field name="type_id" />
+                </xpath>
+
+
+
+****************************** calling a specifc function not tested  super * ***********************************
+
+ 
+from odoo import models, fields, api
+
+class Base1(models.Model):
+    _name = 'your_module.base1'
+
+    def some_method(self):
+        print("Base1 method")
+        return True
+
+class Base2(models.Model):
+    _name = 'your_module.base2'
+
+    def some_method(self):
+        print("Base2 method")
+        return True
+
+class Derived(models.Model):
+    _name = 'your_module.derived'
+    _inherit = ['your_module.base1', 'your_module.base2']
+
+    def call_base1_method(self):
+        # Call the specific method of Base1 using the class name
+        Base1.some_method(self)
+
+****************************** ++++++++++++++++++++++++++++++++ ******************************
+            <tree string="Approvals"
+                decoration-success="state == 'Approved'"
+                decoration-danger="state == 'Refused'"
+                decoration-info="state == 'Submitted'"
+                decoration-warning="state == 'Cancel'">
+                <field name="priority" widget="priority" />
+                <field name="code" />
+                <field name="name" />
+                <field name="user_id" />
+                <field name="request_date" />
+                <field name="pic_id" />
+                <field name="deadline" />
+                <field name="state" widget="badge"
+                    decoration-success="state == 'Approved'"
+                    decoration-danger="state == 'Refused'"
+                    decoration-info="state == 'Submitted'"
+                    decoration-warning="state == 'Cancel'" />
+            </tree>
+
+
+
+************************************ window action ************************************
+
+
+    def create_action(self):
+        ActWindow = self.env['ir.actions.act_window']
+        view = self.env.ref('mail.email_compose_message_wizard_form')
+
+        for template in self:
+            button_name = _('Send Mail (%s)', template.name)
+            action = ActWindow.create({ 
+                'name': button_name,
+                'type': 'ir.actions.act_window',
+                'res_model': 'mail.compose.message',
+                'context': "{'default_composition_mode': 'mass_mail', 'default_template_id' : %d, 'default_use_template': True}" % (template.id),
+                'view_mode': 'form,tree',
+                'view_id': view.id,
+                'target': 'new',
+                'binding_model_id': template.model_id.id,
+            })
+            template.write({'ref_ir_act_window': action.id})
+
+        return True
+
+****************************** database backup ************************************
+
+
+https://www.odoo.com/ar/forum/lms-d-1/how-can-i-take-back-of-database-by-terminal-101505
+
+
+****************************** ++++++++++++++++++++++++++++++++ *****************************
+<tree edit="0" create="0">
+
+
+************************************* Kanban ************************************
+  <field name="unit_ids" string="Units"
+                                    domain="[('is_real_estate','=', True),('state','=','available')]">
+
+                                    <kanban sample="1">
+                                        <field name="id" />
+                                        <field name="product_variant_count" />
+                                        <field name="currency_id" />
+                                        <field name="activity_state" />
+                                        <progressbar field="activity_state"
+                                            colors="{&quot;planned&quot;: &quot;success&quot;, &quot;today&quot;: &quot;warning&quot;, &quot;overdue&quot;: &quot;danger&quot;}" />
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <div
+                                                    class="oe_kanban_card oe_kanban_global_click">
+                                                    <div class="o_kanban_image mr-1">
+                                                        <img
+                                                            t-att-src="kanban_image('product.template', 'image_128', record.id.raw_value)"
+                                                            alt="Product"
+                                                            class="o_image_64_contain" />
+                                                    </div>
+                                                    <div class="oe_kanban_details">
+
+                                                        <div class="o_kanban_record_top mb-0">
+                                                            <div
+                                                                class="oe_kanban_top_right">
+                                                                <strong
+                                                                    class="o_kanban_record_title">
+                                                                    <field name="name" />
+                                                                </strong>
+                                                            </div>
+                                                            <div class="oe_kanban_top_left">
+                                                                <field name="state"
+                                                                    widget="label_selection"
+                                                                    options="{'classes': {'registered': 'default', 'available': 'primary','booked': 'warning','contracted':'success','delivered':'success'}}" />
+                                                            </div>
+
+
+                                                        </div>
+
+
+                                                        <div name="product_lst_price"
+                                                            class="mt-1"> Price: <field
+                                                                name="list_price"
+                                                                widget="monetary"
+                                                                options="{'currency_field': 'currency_id', 'field_digits': True}" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
