@@ -59,7 +59,7 @@ git branch -r
 
  /opt/odoo15/odoo15-venv/bin/python3 /opt/odoo15/odoo15/odoo-bin -c /etc/odoo15.conf -s --dev all --log-level=debug --logfile=
   /opt/odoo15/odoo15-venv/bin/python3 /opt/odoo15/odoo15/odoo-bin -c /etc/odoo15.conf   --log-level=debug --logfile= -d demo_15_approval  
-
+/opt/odoo17/beta_17_env/bin/python3  /opt/odoo17/odoo17/odoo-bin  -c /etc/odoo_17_beta.conf --logfile= -d osama -p 8027
 
 
 ************************************************************domain**************************************************************************************
@@ -444,6 +444,14 @@ This allows you to store and access attributes associated with the many-to-many 
             
                             <filter name="filter_my_contracts" string="My Contracts"
                     domain="[('user_id', '=', uid)]" />
+                    
+                    
+                    
+                    
+        if vals.get(['employee_comment'],False) and (self.employee_id.user_id.id == self.env.context.get('uid')):
+
+
+
 
 
 *********************************** sequence ************************************
@@ -868,11 +876,142 @@ https://www.odoo.com/ar/forum/lms-d-1/how-can-i-take-back-of-database-by-termina
                                         </templates>
                                     </kanban>
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+//date
+
+end_of_the_day = datetime.combine(rec.day_date, datetime.max.time())
+
+
+//datetime
+            # begin_of_the_day = rec.day_date.replace(hour=0, minute=0, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M:%S')
+
+            # begin_of_the_day = rec.day_date.replace(hour=0, minute=0, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M:%S')
+
+
+
+
+****************************** tree view header **********************************
+////////// must select records to show
+
+
+    <record id="stock_valuation_layer_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.valuation.layer.tree.inherit</field>
+        <field name="model">stock.valuation.layer</field>
+        <field name="inherit_id" ref="stock_account.stock_valuation_layer_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree[1]" position="inside">
+                <header>
+
+                    <button string="compensate" name="compensate_selected" type="object"
+                        class="oe_highlight" />
+                </header>
+            </xpath>
+        </field>
+    </record>
+
+
+******************************** currency ************************************
+
+    company_id = fields.Many2one(
+            'res.company', 'Company',
+            default=lambda self: self.env.company.id, index=1)
+    currency_id = fields.Many2one(
+            'res.currency', 'Currency',
+            default=lambda self: self.env.company.currency_id.id,
+            required=True)
+****************************** wizard ************************************
+
+
+                </sheet>
+
+
+                <footer>
+                    <button name="action_validate_revaluation" string="Revalue" type="object"
+                        class="btn-primary" data-hotkey="q" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z" />
+                </footer>
+            </form>
+        </field>
+    </record>
+****************************** configuration 17 *********************************
+
+
+
+
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Odoo_beta_17",
+            "type": "python",
+            "request": "launch",
+            "program": "/opt/odoo17/odoo17/odoo-bin",
+            "python": "/opt/odoo17/beta_17_env/bin/python3",
+            // "justMyCode": true,
+            "args": [
+                "-c",
+                "/etc/odoo_17_beta.conf",
+                "--dev",
+                "all",
+                "--log-level=debug",
+                "--logfile=",
+                "-d",
+                "osama",
+                "-u",
+                "attendance_advanced",
+                // "analyze_attendance_by_day,hr_advanced_validation,hr_raw_zte_attendance,attendance_advanced,real_estate_payments_advanced,contract_management,approvals_for_multiple_things,multi_level_approval,real_estate_payments",
+                // "contract_management,real_estate_payments,real_estate_payments_advanced,multi_level_approval ,attendance_advanced"
+            ],
+            "console": "internalConsole",
+            "redirectOutput": true,
+            "cwd": "${workspaceFolder}",
+            "env": {},
+            "envFile": "${workspaceFolder}/.env",
+        },
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
+
+
+
+
+
+
+
+********************************* ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+you can make onchange on computed field
+****************************** readonly but not for a specific group ************************************
+
+
+
+
+                        <field name="employee_id" readonly="1" />
+                        <field name="employee_id"
+                            groups="hr_payroll_community.group_hr_payroll_community_user" />
+****************************** ++++++++++++++++++++++++++++++++ *******************************
+
+is instant of
+
+
+
+ import datetime
+
+            attendance_date= attendance if isinstance(attendance, datetime.date) else attendance.check_in.date()
+
+
+*********************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
