@@ -57,9 +57,12 @@ git branch -r
  /opt/odoo16/odoo16-venv/bin/python3 /opt/odoo16/odoo16/odoo-bin -c /etc/odoo16.conf --dev all --log-level=debug --logfile= -d stage -u wallet
 
 
- /opt/odoo15/odoo15-venv/bin/python3 /opt/odoo15/odoo15/odoo-bin -c /etc/odoo15.conf -s --dev all --log-level=debug --logfile=
-  /opt/odoo15/odoo15-venv/bin/python3 /opt/odoo15/odoo15/odoo-bin -c /etc/odoo15.conf   --log-level=debug --logfile= -d demo_15_approval  
+
+
 /opt/odoo17/beta_17_env/bin/python3  /opt/odoo17/odoo17/odoo-bin  -c /etc/odoo_17_beta.conf --logfile= -d osama -p 8027
+
+/opt/odoo15/beta_env/bin/python3  /opt/odoo15/odoo15/odoo-bin -c /etc/odoo_15_beta.conf --logfile= -d  -p 8025
+
 
 
 ************************************************************domain**************************************************************************************
@@ -661,10 +664,35 @@ value_if_true if condition else value_if_false
 ****************************** ribbon ************************************
                         <widget name="web_ribbon" title="illegal" bg_color="bg-danger"
                             attrs="{'invisible': [ ('illegal', '=', False)]}" />
-****************************** ++++++++++++++++++++++++++++++++ **********************************
+                            
+                            
+                            .bg-primary
+.bg-secondary
+.bg-success
+.bg-danger
+.bg-warning
+.bg-info
+.bg-light
+.bg-dark
+                            
+                            
+                            
+                            
+                                          <widget name="web_ribbon" title="Reversed"
+                                bg_color="bg-danger"
+                                attrs="{'invisible': [('payment_state', '!=', 'reversed')]}"/>
+                         <widget name="web_ribbon" text="Invoicing App Legacy"
+                                bg_color="bg-info"
+                                attrs="{'invisible': [('payment_state', '!=', 'invoicing_legacy')]}"
+                                tooltip="This entry has been generated through the Invoicing app, before installing Accounting. It has been disabled by the 'Invoicing Switch Threshold Date' setting so that it does not impact your accounting."/>
+
+****************************** width 30% **********************************
 
 
+                       <group style="width:30%">
 
+                       
+                            </group>
 
 
 
@@ -704,31 +732,6 @@ in payment plan
     def confirm_payment_plan(self):
         for rec in self:
             rec.stage='confirmed'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ******************************** ++++++++++++++++++++++++++++++++ ************************************
@@ -1031,12 +1034,133 @@ is instant of
 
 
 
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ******************************
+
+
+            <xpath expr="//notebook" position="before">
+
+
+
+
+
+
+
+
+
+
+
+************************************ ++++++++++++++++++++++++++++++++ ************************************
+
+
+/opt/odoo17/beta_17_env/bin/python3  /opt/odoo17/odoo17/odoo-bin  -c /etc/odoo_17_beta.conf --logfile= -d yousef_test -p 8027
+/opt/odoo17/beta_17_env/bin/python3  /opt/odoo17/odoo17/odoo-bin  -c /etc/odoo_17_beta.conf --logfile= -d osama -p 8027
+****************************** group appear based on groups ************************************
+
+
+
+
+
+                <xpath expr="//widget[@name='hr_leave_stats']" position="before">
+                    <group string="Appears only to assistants" groups="time_off_assistant.group_hr_holidays_assistant">
+
+                        <field name="employee_id" invisible="holiday_type !=  'employee' or employee_id == False" widget="many2one_avatar_employee" domain="['|',('time_off_assistant_id', '=', uid),('user_id','=',uid)]"  />
+
+
+                        <field name="employee_ids"  invisible="holiday_type != 'employee' or (state == 'validate' and employee_id)" readonly="state in ['cancel', 'refuse', 'validate', 'validate1']" required="holiday_type == 'employee' and state in ('draft', 'cancel', 'refuse')" widget="many2many_tags_avatar" domain="['|',('time_off_assistant_id', '=', uid),('user_id','=',uid)]"/>
+                    </group>
+
+                </xpath>
+
+****************************** ++++++++++++++++++++++++++++++++ *********************************
+
+from jinja2 import Environment
+from markupsafe import Markup
+
+
+
+
+
+
+
+
+
+********************************* computed domain ************************************
+
+from odoo import models, fields, api
+
+class YourModelName(models.Model):
+    _name = 'your.model.name'
+
+    field_to_compute_domain = fields.Many2one('related.model.name', domain=lambda self: self._compute_field_domain())
+
+    @api.model
+    def _compute_field_domain(self):
+        context = self.env.context
+        # Retrieve the value from the context using context.get()
+        some_value_from_context = context.get('some_key', 'default_value_if_not_present')
+
+        # Use the retrieved value in your domain computation logic
+        domain = [('some_field', '=', some_value_from_context)]
+        return domain
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+        return {
+            'name': _('Add Dependent Membership'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'context': {'default_cm_contract_id':self.cm_contract_id.id,'default_parent_membership_id':self.id,'dependant_ids':dependant_ids.ids},
+
+            'res_model': 'add.dependant.wizard',
+            'target':'new'
+        }
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
+
+    birthdate = fields.Date(string="Birthdate", required=True)
+    age_years = fields.Integer(string="Age (Years)", compute="_compute_age")
+    age_months = fields.Integer(string="Age (Months)", compute="_compute_age")
+    age_days = fields.Integer(string="Age (Days)", compute="_compute_age")
+
+    @api.depends('birthdate')
+    def _compute_age(self):
+        today = datetime.now().date()
+        for record in self:
+            birthdate = record.birthdate
+            age = relativedelta(today, birthdate)
+            record.age_years = age.years
+            record.age_months = age.months
+            record.age_days = age.days
+
+
+
+
+
+
+
+
+
+****************************** get group users ************************************
+
+
+
+
+    def get_all_sales_persons(self):
+        group_id = self.env.ref('sales_team.group_sale_salesman').id
+        # Retrieve the group record
+        users = self.env['res.groups'].browse(group_id).users
+
+****************************** expansion and destruction in python ************************************
+
+
+
+https://chat.openai.com/c/677856cf-2ba2-432f-a60e-72278f0a6958
+
+
+
+
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
