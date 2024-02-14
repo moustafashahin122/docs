@@ -1161,17 +1161,363 @@ https://chat.openai.com/c/677856cf-2ba2-432f-a60e-72278f0a6958
 
 
 
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ***************************
+
+
+ async onClickDownloadXSD() {
+        await this.rpc("/web/dataset/call_kw/ir.attachment/action_download_xsd_files", {
+            model: 'ir.attachment',
+            method: 'action_download_xsd_files',
+            args: [],
+            kwargs: {}
+        })
+    }
+
+
+
+
+
+*************************************** type ************************************
+
+
+        if not (isinstance(res_model,int)): res_model=res_model.id
+        if not (isinstance(res_id,int)): res_id=res_id.id
+****************************** post get ************************************
+
+https://chat.openai.com/share/b6547023-8dcc-4300-a46f-b5e979059a41
+****************************** xpath widget *******************************
+
+
+   <xpath expr="//field[@name='contract_partner_id_or_ids']" position="attributes">
+                    <attribute name="widget">many2many_tags</attribute>
+                </xpath>*********************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** search view inherit ************************************
+
+ <record id="cm_contract_view_search" model="ir.ui.view">
+      <field name="name">cm.contract.view.search</field>
+      <field name="model">cm.contract</field>
+      <field name="inherit_id" ref="generic_contract.contract_contract_view_search"/>
+      <field name="mode">primary</field>
+
+      <field name="arch" type="xml">
+
+        <search string="Contract">
+
+          <field name="dependant_ids"/>
+
+
+        </search>
+        <!-- <xpath expr="//group[@name='group_by']" position="inside">
+
+        </xpath> -->
+
+      </field>
+    </record>
+
+****************************** default_get ********************************
+
+class MyModel(models.Model):
+    _name = 'my.model'
+
+    def default_get(self, fields_list):
+        defaults = super(MyModel, self).default_get(fields_list)
+        if 'field1' in fields_list:
+            defaults['field1'] = self.env.user.name  # Set default value based on current user
+        if 'field2' in fields_list:
+            defaults['field2'] = fields.Datetime.now()  # Set default value to current date and time
+        return defaults
+
+********************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+
+
+
+
+
+        allowed_times = self.allowed_model_id.allowed_times.mapped('time')
+        if len(allowed_times)>self._max_slots_per_day:
+            allowed_times = allowed_times[:self._max_slots_per_day]
+
+****************************** how to reload window from code ************************************
+
+            return {
+                'type':'ir.actions.client',
+                'tag':'reload'
+            }
+****************************** send_email to *********************************
+
+
+
+
+
+def send_unit_booked_email_to_sales_persons(self):
+        # x=self.get_all_sales_persons().ids
+        email_to = ','.join(self.get_emails_of_all_sales_persons())
+
+        template_id = self.env.ref('real_estate_inventory.email_template_unit_booked_email_template')
+        email_values={"email_to":email_to}
+        mail_id=template_id.send_mail(self.id,email_values=email_values)
+        self.env['mail.mail'].browse(mail_id).send()
+
+
+
+
+
+
+
+
+
+
+********************************* ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+
+
+
+
+
+from odoo import _, api, fields, models
+
+from ast import literal_eval
+def check_if_the_product_exists(product,list_of_dics):
+    for dic in list_of_dics:
+        
+        if product.id ==  dic['product_id']:
+            return True
+    return False
+
+
+class PurchaseOrderInherit(models.Model):
+    _inherit = 'purchase.order'
+    _description = 'Purchase Order Inherit'
+
+
+    po_revaluation_review_ids = fields.One2many('in.rv.po.revaluation.review', 'po_id', string='Reviews')
+
+    # po_valuation_count = fields.Integer("Incoming Shipment count", compute='_compute_incoming_picking_count')
+
+    @api.depends('picking_ids')
+    def _compute_incoming_picking_count(self):
+        for order in self:
+            order.incoming_picking_count = len(order.picking_ids)
+
+
+
+
+    def action_view_po_valuation_layers(self):
+
+
+        pickings=self.env['stock.move']
+        total_scraps=self.env['stock.scrap']
+        compensations_ids=self.env['stock.valuation.layer'].search([('po_id','=',self.id)])
+        
+        for picking in self.picking_ids:
+            pickings = pickings + picking.move_lines
+            scraps=self.env['stock.scrap'].search([('picking_id', '=', picking.id)])
+            total_scraps = total_scraps + scraps
+        
+
+
+
+        domain = [('id', 'in', (pickings + total_scraps.move_id).stock_valuation_layer_ids.ids+compensations_ids.ids)]
+        action = self.env["ir.actions.actions"]._for_xml_id("stock_account.stock_valuation_layer_action")
+        context = literal_eval(action['context'])
+        context.update(self.env.context)
+        context['no_at_date'] = True
+        return dict(action, domain=domain, context=context)
+    
+
+    def get_po_valuations(self):
+        pickings=self.env['stock.move']
+        compensations_ids=self.env['stock.valuation.layer'].search([('po_id','=',self.id)])
+        
+        for picking in self.picking_ids:
+            pickings = pickings + picking.move_lines
+
+        return pickings.stock_valuation_layer_ids + compensations_ids
+
+    
+
+
+    def get_avg_price_of_lines(self,lines):
+        total_quantity=0
+        total_price=0
+        for line in lines:
+            total_price= total_price + line['qty_received'] * line['price_unit']
+            total_quantity=total_quantity + line['qty_received']
+        if total_price and total_quantity:
+            return total_price, total_quantity, total_price/total_quantity
+        return total_price, total_quantity, 0
+
+
+
+    
+    def merge_product_lines_from_order_line(self):
+        merged_product_lines=[]
+        po_valuations=self.get_po_valuations()
+        for line in self.order_line:
+            if not(check_if_the_product_exists(line.product_id,merged_product_lines)):
+                product_lines=self.order_line.filtered_domain([('product_id','=',line.product_id.id)])
+                product_valuations=po_valuations.filtered_domain([('product_id','=',line.product_id.id)])
+                total_price, total_quantity, avg_price=self.get_avg_price_of_lines(product_lines)
+                total_product_qty=sum(product_lines.mapped('product_qty'))
+                total_qty_received=sum(product_lines.mapped('qty_received'))
+                total_qty_invoiced=sum(product_lines.mapped('qty_invoiced'))
+                svl_total_quantity=sum(product_valuations.mapped('quantity'))
+                svl_total_value=sum(product_valuations.mapped('value'))
+                merged_product_lines.append({'po_id':self.id,'product_id':line.product_id.id,'total_product_qty':total_product_qty,'total_qty_received':total_qty_received,'total_qty_invoiced':total_qty_invoiced,'total_quantity':total_quantity,'total_price':total_price,'svl_total_quantity':svl_total_quantity,'svl_total_value':svl_total_value})
+        return merged_product_lines
+
+    def action_correct_inventory_valuation(self):
+        self.env['in.rv.po.revaluation.review'].search([('po_id','=',self.id)]).unlink()
+        merged_product_lines=self.merge_product_lines_from_order_line()
+        self.env['in.rv.po.revaluation.review'].create(merged_product_lines)
+
+        return {
+            'name': _('Revaluation'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'in.rv.po.revaluation',
+            'context': {'default_po_id':self.id},            # 'domain': [('id', 'in', quotations)],
+            'target':'new'
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************** one2many field write ************************************
+    def post_review_additional_fees(self,review):
+        create_dict={"move_id":self.invoice_id.id,"name":f"Addtional Fees of {review.invoice_line_id.name}","account_id":review.invoice_line_id.account_id.id,"analytic_account_id":review.invoice_line_id.analytic_account_id.id,"tax_ids":review.invoice_line_id.tax_ids.ids,"quantity":review.invoice_line_id.quantity,'price_unit':review.unit_added_value}
+        self.invoice_id.with_context(check_move_validity=False).write({'invoice_line_ids':[[0,0,create_dict]]})
+
+****************************** add button in tree view header ***********************************
+
+ <record id="cm_membership_view_tree" model="ir.ui.view">
+            <field name="name">cm.membership.view.tree</field>
+            <field name="model">cm.membership</field>
+            <field name="arch" type="xml">
+                <tree string="Membership" decoration-success="membership_status == 'active'" decoration-info="membership_status == 'pending'" decoration-warning=" is_suspended == True">
+                    <header>
+                        <button string="Activate" name="action_activate_membership" type="object" class="bg-success" attrs="{'invisible': [ '|',('membership_status', 'not in', ('pending')),('is_suspended', '=', True)]}"/>
+                    </header>
+                    <field name="code" />
+                    <field name="is_suspended" invisible="1" />
+                    <field name="active" invisible="1" />
+                    <field name="membership_type" />
+                    <field name="dependant_type" />
+                    <!-- <field name="separation_required" />
+                    <field name="separation_warning" /> -->
+
+                    <field name="partner_id" />
+                    <field name="cm_contract_id" />
+                    <field name="parent_membership_id" />
+                    <field name="membership_status" widget="badge" decoration-success="membership_status == 'active'" decoration-info="membership_status == 'pending'" decoration-warning=" is_suspended == True"/>
+                    <button string="Activate" name="action_activate_membership" type="object" class="bg-success" attrs="{'invisible': [ '|',('membership_status', 'not in', ('pending')),('is_suspended', '=', True)]}"/>
+                    <!-- <button string="Suspend Membership" name="action_open_membership_suspension_wizard" type="object" class="bg-warning" /> -->
+
+                    <!-- <field name="membership_type" /> -->
+                </tree>
+            </field>
+        </record>
+
+
+
+******************************* ++++++++++++++++++++++++++++++++ ************************************
+
+# -*- coding: utf-8 -*-
+
+
+{
+    'name': 'Hide Any Menu User Wise',
+    'version': '17.0.1.0.0',
+    'summary': 'Hide Any Menu Item User Wise',
+    'description': 'Hide Any Menu Item User Wise, Hide Menu Items, Hide Menu',
+    'category': 'Extra Tools',
+    'author': 'Cybrosys Techno Solutions',
+    'company': 'Cybrosys Techno Solutions',
+    'maintainer': 'Cybrosys Techno Solutions',
+    'website': "https://www.cybrosys.com",
+    'depends': ['base'],
+    'data': [
+        'views/res_users.xml',
+        'security/security.xml'
+    ],
+    'license': 'LGPL-3',
+    'images': ['static/description/banner.png'],
+    'installable': True,
+    'auto_install': False,
+    'application': False,
+}
+
+
+
+
+
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+
+
+{
+    'name': 'Payroll Advanced attendance calculation',
+    'version': '1.0',
+    'depends': ['hr_attendance',"hr_payroll_community",'hr_holidays','hr_raw_zte_attendance'],
+    'author': 'Metrics',
+    'category': 'Uncategorized',
+
+    'description': '''
+    Integrating hr attendance with payroll to calculate:
+    - missing check in/check out
+    - late check in / checkout 
+    - early check in / checkout
+    - matching this with expected working days and hours
+    ''',
+    # data files always loaded at installation
+    'data': [
+        'security/ir.model.access.csv',
+        'views/payslip.xml',
+        'views/aa_payslip_exclusion_views.xml',
+        'views/absent.xml',
+    ],
+    # data files containing optionally loaded demonstration data
+    'demo': [
+  
+    ],
+}
+
+
+****************************** ++++++++++++++++++++++++++++++++ ***********************************
+
+        if vals.get('user_id',False):self.create_sales_person_activity()
+
+
+
+
+******************************* no_create / no_create and edit ************************************
+
+
+
+                            <field name="spouse_id" attrs="{'invisible': [('dependant_type', '=', 'child')],'required':[('dependant_type', '=', 'spouse')]}" options="{'no_create': True, 'no_create_edit':True}" />
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
