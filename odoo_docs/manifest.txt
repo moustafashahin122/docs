@@ -1,0 +1,87 @@
+# -*- coding: utf-8 -*-
+{
+
+    
+    'name': " International Phone Widget ",
+    'summary': " This is a widget with built in validation for phone fields ",
+    'description': """
+    This is a widget with built in validation for phone fields
+    """,
+    'author': "Metrics",
+    'website': "https://www.metrics.com.eg/",
+    'category': 'Widgets',
+    'version': '17.0.1.0.0',
+    'installable': True,
+    'application': True,
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # -*- coding: utf-8 -*-
+{
+
+    
+    'name': " International Phone Widget ",
+    'summary': " This is a widget with built in validation for phone fields ",
+    'description': """
+    This is a widget with built in validation for phone fields
+    """,
+    'author': "Metrics",
+    'website': "https://www.metrics.com.eg/",
+    'category': 'Widgets',
+    'version': '17.0.1.0.0',
+    'installable': True,
+    'application': True,
+    'depends' : ['base', 'web'],
+    'data': [
+        'views/res_partner.xml',
+        # 'views/external_libraries.xml',
+    ],
+    'demo': [
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'owl/static/src/components/*/*.js',
+            'owl/static/src/components/*/*.xml',
+            'owl/static/src/components/*/*.scss',
+        ],
+    },
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/opt/odoo17/odoo17/addons/web/static/src/model/relational_model/record.js

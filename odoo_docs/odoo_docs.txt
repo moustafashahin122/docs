@@ -177,6 +177,7 @@ git rm --cached '*.pyc'
 ****************************** monetary field ************************************
     currency_id = fields.Many2one('res.currency',string="Currency") 
 
+    currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
 
 	price = fields.Monetary(string='Price', required=True,currency_field='currency_id',tracking=True)
               <field name="total_cheques_amount" widget="monetary" />
@@ -255,15 +256,19 @@ git rm --cached '*.pyc'
 
 
 
-
+#########################........Odoo 15 .........########################################
   <sheet>
                 <div class="oe_button_box" name="button_box">
         <button name="action_view_quotation" type="object" class="oe_stat_button" icon="fa-pencil-square-o" attrs="{'invisible': [('quotation_count', '=', 0)]}">
                                 <field name="quotation_count" widget="statinfo" string="Quotations"/>
                             </button>
                         </div>
-
-
+#########################........Odoo 17 .........########################################
+     <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-pencil-square-o" invisible ="invoice_count == 0">
+                            <field name="invoice_count" widget="statinfo" string="Inovices"/>
+                        </button>
+                    </div>
 ****************************** compute function ************************************
     car_id = fields.Many2one('workshop.car', string='Car',compute="_compute_car_id",tracking=True)
 
@@ -581,7 +586,8 @@ from odoo.exceptions import UserError
             'tag': 'display_notification',
             'params': {
                 'type': 'info',
-                
+                                'title':"Success",
+
                 'message': _("Two-factor authentication disabled for the following user(s)"),
                 'next': {'type': 'ir.actions.act_window_close'},
             }
@@ -916,11 +922,10 @@ end_of_the_day = datetime.combine(rec.day_date, datetime.max.time())
 
     company_id = fields.Many2one(
             'res.company', 'Company',
-            default=lambda self: self.env.company.id, index=1)
+            default=lambda self: self.env.company, index=1)
     currency_id = fields.Many2one(
             'res.currency', 'Currency',
-            default=lambda self: self.env.company.currency_id.id,
-            required=True)
+            default=lambda self: self.env.company.currency_id,
 ****************************** wizard ************************************
 
 
@@ -1085,6 +1090,30 @@ from markupsafe import Markup
 
 
 ********************************* computed domain ************************************
+	
+	
+	new
+	
+	
+	
+	<field name="parent_id" domain="[('id', 'in', context.get('task_ids', []))]"/>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	old
+	
+	
+	
+	
 
 from odoo import models, fields, api
 
@@ -1092,7 +1121,6 @@ class YourModelName(models.Model):
     _name = 'your.model.name'
 
     field_to_compute_domain = fields.Many2one('related.model.name', domain=lambda self: self._compute_field_domain())
-
     @api.model
     def _compute_field_domain(self):
         context = self.env.context
@@ -1250,6 +1278,34 @@ class MyModel(models.Model):
 ****************************** send_email to *********************************
 
 
+  <record id="email_template_unit_booked_email_template" model="mail.template">
+            <field name="name">Unit Booked Email Template To All Sales Persons</field>
+            <field name="model_id" ref="real_estate_inventory.model_crm_lead" />
+            <!-- <field name="email_from">{{ object.partner_id.email}}</field> -->
+            <!-- <field name="partner_to">{{ object.partner_id.id }}</field> -->
+            <field name="subject">Unit {{ object.proposed_unit.display_name }} is BOOKED </field>
+            <field name="description">Sent to all sales persons when unit is booked</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0; padding: 0; font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+                    <p style="margin: 0; padding: 0;">
+                Please note that unit
+                        <t t-if="object.proposed_unit">
+                            <strong>
+                                <t t-out="object.proposed_unit.display_name or ''"/>
+                            </strong>
+                        </t>
+                has been booked by
+                        <t t-if="object.user_id.name">
+                            <strong>
+                                <t t-out="object.user_id.name or ''"/>
+                            </strong>
+                        </t>
+                    </p>
+                </div>
+            </field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="auto_delete" eval="True" />
+        </record>
 
 
 
@@ -1443,9 +1499,9 @@ class PurchaseOrderInherit(models.Model):
 
 
 {
-    'name': 'Hide Any Menu User Wise',
+    'name': 'OCA Bank Reconcilation Cosmatics',
     'version': '17.0.1.0.0',
-    'summary': 'Hide Any Menu Item User Wise',
+
     'description': 'Hide Any Menu Item User Wise, Hide Menu Items, Hide Menu',
     'category': 'Extra Tools',
     'author': 'Cybrosys Techno Solutions',
@@ -1518,6 +1574,646 @@ class PurchaseOrderInherit(models.Model):
 
                             <field name="spouse_id" attrs="{'invisible': [('dependant_type', '=', 'child')],'required':[('dependant_type', '=', 'spouse')]}" options="{'no_create': True, 'no_create_edit':True}" />
 
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+    main_contract_partner = fields.Many2one('contract.partner', string='Main Partner',compute="_compute_main_partner",store=True)
+
+    @api.depends('contract_partner_id_or_ids')
+    def _compute_main_partner(self):
+        for rec in self:
+            if rec.contract_partner_id_or_ids:
+                rec.main_contract_partner=rec.contract_partner_id_or_ids[0].id
+            else:
+                rec.main_contract_partner=False
+****************************** ++++++++++++++++++++++++++++++++ ******************************
+
+self.env["mail.activity"]
+            .sudo()
+            .create(
+                {
+                    "activity_type_id": self.activity3.id,
+                    "note": "Partner activity 3.",
+                    "res_id": self.partner_client.id,
+                    "res_model_id": partner_model_id,
+                    "user_id": self.employee.id,
+                }
+            )
+        )
+
+
+
+
+************************************ ++++++++++++++++++++++++++++++++ ************************************
+
+
+    # probability_as_percentage = fields.Float('Probability')
+    # probability_value = fields.Float(compute='_compute_probability_value', string='Probability Value')
+    
+    # @api.depends('probability_as_percentage')
+    # def _compute_probability_value(self):
+    #     for rec in self:
+    #         rec.probability_value = rec.probability_as_percentage/100
+****************************** add create and delete and update using numbers  ************************************
+
+
+
+
+
+https://www.cybrosys.com/blog/what-are-the-special-command-operation-for-one2many-and-many2many-fields
+
+https://www.cybrosys.com/blog/how-to-pass-values-to-the-child-lines-of-one2many-fields 
+
+
+(6, 0, [IDs]) replace the list of linked IDs.
+
+Example:
+
+[(6, 0, [8, 5, 6, 4])] sets the many2many to ids [8, 5, 6, 4]
+Here are other codes:
+
+(0, 0,  { values })    link to a new record that needs to be created with the given values dictionary
+(1, ID, { values })    update the linked record with id = ID (write *values* on it)
+(2, ID)                remove and delete the linked record with id = ID (calls unlink on ID, that will delete the object completely, and the link to it as well)
+(3, ID)                cut the link to the linked record with id = ID (delete the relationship between the two objects but does not delete the target object itself)
+(4, ID)                link to existing record with id = ID (adds a relationship)
+(5)                    unlink all (like using (3,ID) for all linked records)
+(6, 0, [IDs])          replace the list of linked IDs (like using (5) then (4,ID) for each ID in the list of IDs)
+****************************** create invoice from code ********************************
+
+
+
+
+    def create_request_invoice(self):
+        invoice = self.env['account.move'].create({
+            'move_type': 'out_invoice',
+            'partner_id': self.customer_id.id,
+            'partner_shipping_id': self.customer_id.id,
+            'booking_request_id': self.id,
+            'invoice_date': datetime.now(),
+            'invoice_line_ids': [(0, 0, {
+                                        'product_id': self.unit_id.product_variant_id.id,
+                                        'price_unit': 54545,
+                                        })] ,
+              })
+
+
+
+
+
+
+
+
+
+
+
+
+********************************** ref in view / invisible using ref ************************************
+
+
+
+                <button name="action_book_unit" string="Booked" type="object" invisible="stage_id == %(stage_booked)d or is_won == True" />
+
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+  <!-- dddddddddddddddddddddddddddddddd -->
+
+
+            <xpath expr="//button[@name='action_configure_bank_journal']" position="replace">
+                <button name="%(account_reconcile_oca.action_bank_statement_line_reconcile_all)s" type="action" class="btn btn-primary" groups="account.group_account_invoice">New Transaction</button>
+
+            </xpath>
+
+
+            <xpath expr="//t[@t-name='JournalBodyBankCash']//a[@name='action_new_transaction']" position="replace">
+
+                <a role="menuitem" type="object" name="open_action_with_context" context="{'action_name': 'action_bank_statement_tree', 'search_default_journal': True}">Statements</a>
+            </xpath>
+            <xpath expr="//t[@t-name='kanban-menu']//a[@name='action_new_transaction']" position="replace">
+                <a role="menuitem" type="action" name="%(account_reconcile_oca.action_bank_statement_line_reconcile_all)s">New Transaction</a>
+            </xpath>
+            <!-- ddddddddddddd -->
+
+
+
+
+
+****************************** ++++++++++++++++++++++++++++++++ ******************************
+
+
+
+# -*- coding: utf-8 -*-
+{
+    'name': 'OCA Bank Reconcilation Cosmatics',
+
+    'description': """
+This module adds missing menus and view for OCA Bank Reconcilation Module and fix existing ones    """,
+
+    'author': "Metrics",
+    'website': "https://www.metrics.com.eg/",
+
+
+    'category': 'Uncategorized',
+    'version': '17.0.1.0.0',
+    # any module necessary for this one to work correctly
+    'depends': ['account'],
+
+    # always loaded
+    'data': [
+        'views/account_journal_dashboard_kanban_view.xml',
+    ],
+    # only loaded in demonstration mode
+    'demo': [
+        # 'demo/demo.xml',
+    ],
+}
+
+
+
+
+
+
+************************************ ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+
+
+	
+            <!-- checking for duplicate leads  -->
+            <!-- <xpath expr="//group[@name='opportunity_partner']" position="inside">
+                <field name="partner_id" />
+
+                <field name="contact_name"/>
+                <field name="partner_name"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="email_from"/>
+
+                <field name="function"/>
+            </xpath> -->
+
+
+
+
+
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+
+
+
+
+
+<group string="Tracking" name="categorization">
+                        <group string="budget" name="tracking_budget">
+                            <field name="budget_min" widget="monetary" field_id="budget_min_0"/>
+                            <field name="budget_max" widget="monetary" field_id="budget_max_0"/>
+                        </group>
+
+                        <group string="Area" name="tracking_rea">
+                            <field name="area_min" field_id="area_min_0"/>
+                            <field name="area_max" field_id="area_max_0"/>
+                        </group>
+                        <group string="Proposed unit" name="tracking_proposed_unit">
+                            <field name="proposed_unit" on_change="1" can_create="True" can_write="True" field_id="proposed_unit_1"/>
+                        </group>
+                        <group string="Location" name="tracking_location">
+                            <field name="locations_preferred" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" can_create="True" can_write="True" field_id="locations_preferred_0"/>
+                            <field name="projects_preferred" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" can_create="True" can_write="True" field_id="projects_preferred_0"/>
+                        </group>
+                        <group name="tracking_marketing" string="Marketing">
+                            <field name="broker_id" can_create="True" can_write="True" field_id="broker_id_0"/>
+                <field name="broker_agent_name" field_id="broker_agent_name_0"/>
+                <field name="broker_agent_phone" widget="phone" field_id="broker_agent_phone_0"/>
+                            <field name="campaign_id" can_create="True" can_write="True" field_id="campaign_id_0"/>
+                            <field name="medium_id" can_create="True" can_write="True" field_id="medium_id_0"/>
+                            <field name="source_id" can_create="True" can_write="True" field_id="source_id_0"/>
+                            <field name="referred" field_id="referred_0"/>
+                            <field name="self_generated" invisible="1" field_id="self_generated_0"/>
+                        </group>
+
+                    </group>
+                    <group string="Analysis">
+                        <field name="date_open" on_change="1" field_id="date_open_0"/>
+                        <field name="date_closed" on_change="1" field_id="date_closed_0"/>
+                    </group>
+                </page>
+                            <page string="Internal Notes" name="internal_notes">
+                                <field name="description" placeholder="Add a description..." options="{'collaborative': true}" field_id="description_0"/>
+                            </page>
+                            <page name="extra" string="Extra Info" invisible="type == 'opportunity'">
+                                <group>
+                                    <group string="Email">
+                                        <field name="message_bounce" readonly="1" field_id="message_bounce_0"/>
+                                    </group>
+                                    <group string="Marketing" name="categorization">
+                                        <field name="campaign_id" options="{'create_name_field': 'title'}" can_create="True" can_write="True" field_id="campaign_id_1"/>
+                                        <field name="medium_id" can_create="True" can_write="True" field_id="medium_id_1"/>
+                                        <field name="source_id" can_create="True" can_write="True" field_id="source_id_1"/>
+                                        <field name="referred" field_id="referred_1"/>
+                                    </group>
+                                    <group string="Analysis">
+                                        <field name="date_open" on_change="1" field_id="date_open_1"/>
+                                        <field name="date_closed" on_change="1" field_id="date_closed_1"/>
+                                    </group>
+                                </group>
+
+
+
+
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+    <record id="crm_all_leads_action" model="ir.actions.act_window">
+        <field name="name">All Leads</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,kanban,graph,pivot,calendar,form,activity</field>
+        <field name="domain">['|',("active","=",True),("active","=",False)]</field>
+        <field name="view_ids" eval="[Command.clear(),
+     Command.create({'sequence': '1', 'view_mode': 'form', 'view_id': ref('real_estate_inventory.crm_sales_person_lead_view_form_inheritt' )}),
+    Command.create({'sequence': '0', 'view_mode': 'tree', 'view_id': ref('crm.crm_lead_view_list_activities' )})]" />
+
+        <field name="search_view_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="context">{}</field>
+
+    </record>
+
+
+
+
+
+
+
+
+
+****************************** this weeks leads  ************************************
+
+
+
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+
+****************************** search view inheritance ************************************
+
+
+
+ <record id="crm_activity_report_view_search_inherit" model="ir.ui.view">
+        <field name="name">crm.activity.report.view.search.inherit</field>
+        <field name="model">crm.activity.report</field>
+        <field name="inherit_id" ref="crm.crm_activity_report_view_search"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="date"/>
+            </search>
+
+            <xpath expr="//filter[1]" position="before">
+                <filter name="today_activities" string="Today Activities" domain="[('date', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00')), ('date', '&lt;=', (datetime.datetime.now()).strftime('%Y-%m-%d 23:59:59'))]" />
+                <filter name="this_week_activities" string="This Week Activities" domain="[('date', '&gt;=',(datetime.datetime.now() + relativedelta( days=-7,weekday=5)).strftime('%Y-%m-%d 00:00:00'))]" />
+            </xpath>
+
+        </field>
+    </record>
+
+****************************** add setting to module ********************************
+
+
+==================================      xml    ===================================
+
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+
+
+        <record id="res_config_settings_view_form_inherit" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form" position="inside">
+
+                    <app data-string="Real estate Inventory" string="Real estate Inventory" name="real_estate_inventory" groups="helpdesk_mgmt.group_helpdesk_manager">
+                        <block title="Real Estate Inventory">
+
+                            <div class="row mt16 o_settings_container" name="booking_request_invoicing_product">
+                                <div class="col-12 col-lg-6 o_setting_box" id="booking_request_invoicing_product_1">
+                                    <div class="o_setting_right_pane" id="booking_request_invoicing_product_1_1">
+
+                                        <label for="booking_request_invoicing_product_id" class="col-sm-5 col-form-label">
+                                    Booking Request Invoicing Product
+                                        </label>
+                                        <field name="booking_request_invoicing_product_id"/>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </block>
+                    </app>
+                </xpath>
+            </field>
+        </record>
+
+
+
+    </data>
+
+
+</odoo>
+
+
+
+
+
+
+
+
+==================================      py    ===================================
+
+
+from odoo import fields, models
+
+
+
+
+
+
+class ResConfigSettings(models.TransientModel):
+    _inherit = 'res.config.settings'
+
+
+    booking_request_invoicing_product_id=fields.Many2one('product.template',string="Booking Request Invoicing Product", config_parameter='booking_request_invoicing.booking_request_invoicing_product_id_param', help='This is the product that is add to the invoice when you create booking request invoice')
+
+
+
+
+
+
+
+********************************** line_ids ************************************
+
+
+
+
+        vals = {
+            'move_type': inv_type,
+            'partner_id': self.partner_a.id,
+            'invoice_line_ids': [(0, 0, {
+                'name': 'xxxx',
+                'quantity': 1,
+                'price_unit': amount,
+                'tax_ids': [(6, 0, taxes.ids)],
+            }) for amount, taxes in taxes_per_line],
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+add to bank_statment_cosmatics account_reconcile_oca
+
+ <field name="name">Reconcile bank statement lines</field>
+        <field name="res_model">account.bank.statement.line</field>
+        <field name="context">{'search_default_move_id': active_id}</field>
+        <field name="view_mode">kanban</field>
+        <field
+            name="view_ids"
+****************************** ++++++++++++++++++++++++++++++++ *********************************
+
+               You might want to set the invoice as <button
+                                        name="button_manual_reference_full_paid"
+                                        type="object"
+                                        method_args="[1]"
+                                        
+                                    >fully paid</button>.
+
+
+
+
+
+
+********************************* ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+            if rec.state != 'available': booked_units.append(rec.default_code)
+
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+            <xpath expr="//notebook/page[1]" position="before">
+                <page name="units_to_book" string="Units To Book">
+                    <field name="unit_expected_revenue_ids" />
+                </page>
+            </xpath>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+# -*- coding: utf-8 -*-
+{
+    'name': "Booking Request Invoicing",
+    'summary': "Allows user to create a reservation invoice from the booking request",
+    'description': """
+Allows user to create a reservation invoice from the booking request.
+    """,
+    'author': "Metrics",
+    'website': "https://www.metrics.com.eg/",
+    'category': 'Invoicing',
+    'version': '17.0.1.0.0',
+
+    # any module necessary for this one to work correctly
+    'depends': ['real_estate_inventory','sale'],
+
+    # always loaded
+    'data': [
+        # 'security/ir.model.access.csv',
+        'views/lead_booking_request_inherit_views.xml',
+        'views/res_config_settings_inherit.xml',
+    ],
+  
+    'demo': [
+        # 'demo/demo.xml',
+    ],
+        'installable': True,
+    'application': True,
+}
+
+****************************** show archived records in one2many fields ************************************
+    archived_plan_structure_approval_ids = fields.One2many(comodel_name='fa.multi_approval',inverse_name= 'plan_structure_id', string='Archived Approvals',compute="_compute_archived_plan_structure_approval_ids",context={'active_test':False,})
+
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************

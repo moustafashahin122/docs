@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="lead_sales_person_onchange_activity" model="ir.actions.server">
+            <field name="name">Call Activity</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="usage">base_automation</field>
+            <field name="state">next_activity</field>
+            <field name="activity_type_id" ref="mail.mail_activity_data_call" />
+            <field name="activity_user_type">generic</field>
+
+            <field name="activity_user_field_name">user_id</field>
+
+        </record>
+
+        <record id="lead_sales_person_onchange_email" model="ir.actions.server">
+            <field name="name">Send Email</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="usage">base_automation</field>
+            <field name="template_id" ref="real_estate_crm.new_lead_template"/>
+            <field name="state">mail_post</field>
+            <field name="mail_post_method">email</field>
+        </record>
+
+        <record id="lead_sales_person_onchange" model="base.automation">
+            <field name="name">Lead: sales person change</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="trigger">on_create_or_write</field>
+            <field name="trigger_field_ids" eval="[(6,0,[ref('crm.field_crm_lead__user_id')])]" />
+
+            <field name="action_server_ids" eval="[(6,0,[ref('real_estate_crm.lead_sales_person_onchange_activity')   ,  ref('real_estate_crm.lead_sales_person_onchange_email')     ])          ] "/>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+
+</odoo>

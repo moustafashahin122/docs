@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+
+
+        <record id="new_lead_template" model="mail.template">
+            <field name="name">New Lead Email To Sales Person</field>
+            <field name="model_id" ref="real_estate_crm.model_crm_lead" />
+            <field name="partner_to">{{ object.user_id.partner_id.id }}</field>
+            <field name="subject">New {{ object.name }}  </field>
+            <field name="description">sent to a sales person when assigned new lead</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0; padding: 0; font-family: Arial, sans-serif; font-size: 14px; color: #333;">
+                    <p style="margin: 0; padding: 0;">
+                Please note that You have been assigned to a new lead
+                        <t t-if="object.name">
+                            <strong>
+                                <t t-out="object.name or ''"/>
+                            </strong>
+                        </t>
+
+                    </p>
+                </div>
+            </field>
+            <field name="lang">{{ object.partner_id.lang }}</field>
+            <field name="auto_delete" eval="True" />
+        </record>
+
+    </data>
+
+
+</odoo>

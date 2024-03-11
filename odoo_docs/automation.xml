@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <record id="automated_activity_action_server" model="ir.actions.server">
+            <field name="name">{"en_US": "Create activity: Test"}</field>
+            <field name="model_id" ref="real_estate_inventory.model_crm_lead_booking_request"/>
+            <field name="usage">base_automation</field>
+            <field name="state">next_activity</field>
+            <field name="activity_type_id" model="mail.activity.type" search="[('name', '=', 'Call')]" />
+            <field name="activity_user_type">generic</field>
+            
+            <field name="activity_user_field_name">user_id</field>
+
+            <field name="code"></field>
+        </record>
+        <record id="test_rule_on_create" model="base.automation">
+            <field name="name">Base Automation: test rule on state set</field>
+            <field name="model_id" ref="real_estate_inventory.model_crm_lead_booking_request"/>
+            <field name="trigger">on_state_set</field>
+            <!-- <field name="trg_field_ref">pending</field> -->
+            <field name="trg_selection_field_id" model="ir.model.fields.selection" search="[('field_id','=',13486),('value','=','pending')]" />
+
+            <field name="filter_domain">[('state', '=', 'pending')]</field>
+            <field name="action_server_ids" eval="[(6,0,[ref('real_estate_inventory.automated_activity_action_server')])]"/>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+
+</odoo>
+
+
+
+self.env['ir.model.fields.selection'].search([('field_id','=',self.env.ref('crm.field_crm_lead__user_id').id)])
+
+
+
+
+            <field name="category_ids" eval="[Command.set([ref('employee_category_4'), ref('employee_category_5')])]"/>
+
