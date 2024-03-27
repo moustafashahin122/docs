@@ -1664,7 +1664,7 @@ Here are other codes:
 
 
 
-
+165a6aeea9cee302d504030f504def773621b9aa
 
 
 
@@ -2067,21 +2067,426 @@ Allows user to create a reservation invoice from the booking request.
 ****************************** show archived records in one2many fields ************************************
     archived_plan_structure_approval_ids = fields.One2many(comodel_name='fa.multi_approval',inverse_name= 'plan_structure_id', string='Archived Approvals',compute="_compute_archived_plan_structure_approval_ids",context={'active_test':False,})
 
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** settings menu *************************************
+
+
+
+<menuitem id="contract_menu" name="Contracts Configuration" parent="base.menu_custom" sequence="10"/>
+
+
+
+
+        <!-- reporting menu -->
+
+        <menuitem id="contract_reporting_menu" name="Reporting" parent="contract_menu" sequence="10"/>
+
+
+
+
+
+
+
+***************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+                    <field name="partner_ids" readonly="stage_id == %(stage_booked)d">
+
+****************************** no label odoo 17 ************************************
+
+
+
+
+
+                            <field name="unit_expected_revenue_ids" readonly="stage_id == %(stage_booked)d or is_won == True" nolabel="1" colspan="2"/>
+
+****************************** ++++++++++++++++++++++++++++++++ **********************************
+
+<xpath expr="//field[@name='partner_id']" position="attributes">
+    <attribute name="readonly">stage_id == %(stage_booked)d or is_won == True</attribute>
+</xpath>
+
+
+
+
+
+******************************** ++++++++++++++++++++++++++++++++ ************************************
+
+    def update_owners_when_customer_change(self,values):
+        x=self.env.ref('real_estate_inventory.stage_booked')
+        if self.stage_id.id != self.env.ref('real_estate_inventory.stage_booked').id and not(self.is_won) and 'owner_ids' not in values.keys():
+            
+            if values.get('partner_id',False) and values['partner_id'] not in self.owner_ids.ids:
+                self.owner_ids = self.owner_ids + self.env['res.partner'].browse(values['partner_id'])
+            else:
+                self.owner_ids = self.owner_ids + self.partner_id
+
+
+
+
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+
+
+http_interface =
+http_port = 8017
+import_partial =
+limit_memory_hard = 268435456000
+limit_memory_soft = 214748364800
+limit_request = 655360000
+limit_time_cpu = 6000
+limit_time_real = 120000
+limit_time_real_cron = -1
+list_db = True
+log_db = False
+log_db_level = warning
+log_handler = :INFO
+log_level = debug
+logfile =
+max_cron_threads = 2
+osv_memory_count_limit = 0
+pg_path =
+pidfile =
+
+****************************** ++++++++++++++++++++++++++++++++ **********************************
+
+get_employee_work_entries_dates
+
+
+
+like','WORK100'
+
+
+
+    def get_employee_work_entries_date_time(self, date_from, date_to):
+        work_entries = self.env['hr.work.entry'].search([('employee_id','=',self.id),('date_start','>=',date_from),('date_stop','<=',date_to)])
+        attendance_work_entries = work_entries.filtered_domain([('work_entry_type_id.code','ilike','WORK')])
+        return attendance_work_entries
+
+
+
+******************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+
+
+    def regenerate_work_entries(self):
+        self.ensure_one()
+        if not self.env.context.get('work_entry_skip_validation'):
+            if not self.valid:
+                raise ValidationError(_("In order to regenerate the work entries, you need to provide the wizard with an employee_id, a date_from and a date_to. In addition to that, the time interval defined by date_from and date_to must not contain any validated work entries."))
+
+            if self.date_from < self.earliest_available_date or self.date_to > self.latest_available_date:
+                raise ValidationError(_("The from date must be >= '%(earliest_available_date)s' and the to date must be <= '%(latest_available_date)s', which correspond to the generated work entries time interval.", earliest_available_date=self._date_to_string(self.earliest_available_date), latest_available_date=self._date_to_string(self.latest_available_date)))
+
+        date_from = max(self.date_from, self.earliest_available_date) if self.earliest_available_date else self.date_from
+        date_to = min(self.date_to, self.latest_available_date) if self.latest_available_date else self.date_to
+        work_entries = self.env['hr.work.entry'].search([
+            ('employee_id', 'in', self.employee_ids.ids),
+            ('date_stop', '>=', date_from),
+            ('date_start', '<=', date_to),
+            ('state', '!=', 'validated')])
+
+        write_vals = {field: False for field in self._work_entry_fields_to_nullify()}
+        work_entries.write(write_vals)
+        self.employee_ids.generate_work_entries(date_from, date_to, True)
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+    async onClick() {
+        if (!this.props.readonly && this.props.record.isInEdition) {
+            const changes = { [this.props.name]: !this.props.record.data[this.props.name] };
+            await this.props.record.update(changes, { save: this.props.autosave });
+        }
+    }
+}
+
+
+
+
+
+
+
+
+    triggerIsDirty(isDirty) {
+        this.props.record.model.bus.trigger(
+            "FIELD_IS_DIRTY",
+            isDirty ?? !areDatesEqual(this.getRecordValue(), this.state.value)
+        );
+    }
+
+    //-------------------------------------------------------------------------
+    // Handlers
+    //-------------------------------------------------------------------------
+
+    onInput() {
+        this.triggerIsDirty(true);
+    }
+}
+
+****************************** action from python ***********************************
+
+            def base_automation_onchange(self):
+                automation_rule = self.env['base.automation'].browse(automation_rule_id)
+                result = {}
+                actions = automation_rule.sudo().action_server_ids.with_context(
+                    active_model=self._name,
+                    active_id=self._origin.id,
+                    active_ids=self._origin.ids,
+                    onchange_self=self,
+                )
+                for action in actions:
+                    try:
+                        res = action.run()
+                    except Exception as e:
+                        automation_rule._add_postmortem(e)
+                        raise
+
+
+
+
+
+
+
+
+
+
+
+
+******************************* ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+
+
+165a6aeea9cee302d504030f504def773621b9aa
+
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+ <xpath expr="//group" position="before">
+                    <!-- <group name="cust_info">
+                    </group>
+                    <br/> -->
+                    <group name="customer_info_1" string="Customer Info">
+
+                        <group name="customer_info_1_1">
+                            <field name="partner_id" readonly="stage_id == %(real_estate_inventory.stage_booked)d or is_won == True"/>
+                            <field name="function"/>
+                            <field name="salesperson_domain" invisible="1" />
+                            <field name="user_id" required="1" options="{'no_open': True, 'no_create': True}" domain="[('id','in',salesperson_domain)]" />
+                        </group>
+
+
+
+                        <group name="customer_info_1_2">
+                            <field name="phone" widget="international_phone_widget"/>
+                            <field name="mobile" widget="international_phone_widget"/>
+                            <field name="email_from"/>
+                        </group>
+                    </group>
+
+                    <group string="Tracking" name="categorization">
+                        <group string="budget" name="tracking_budget">
+                            <field name="budget_min" widget="monetary" />
+                            <field name="budget_max" widget="monetary" />
+                        </group>
+
+                        <group string="Area" name="tracking_rea">
+                            <field name="area_min" />
+                            <field name="area_max" />
+                        </group>
+
+
+                    </group>
+                    <group name="tracking_marketing" string="Marketing">
+                        <group name="marketing_1">
+
+                            <field name="broker_id" />
+                            <field name="broker_agent_name" />
+                            <field name="broker_agent_phone" widget="phone" />
+                            <field name="campaign_id" />
+                        </group>
+                        <group name="marketing_2">
+                            <field name="medium_id" />
+                            <field name="source_id" />
+                            <field name="reactivation_source_id" />
+                            <field name="referred" />
+                            <field name="self_generated" invisible="1" />
+                        </group>
+                    </group>
+                    <group name="location_and_ananlysis">
+
+                        <group string="Location" name="tracking_location">
+                            <field name="locations_preferred" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" />
+                            <field name="projects_preferred" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" />
+                        </group>
+
+
+                        <group string="Analysis">
+                            <field name="date_open" />
+                            <field name="activity_date_deadline" />
+                            <field name="date_closed" />
+                            <field name="create_date" />
+                        </group>
+                    </group>
+
+
+                </xpath>
+                <xpath expr="//page[@name='source']" position="attributes">
+                    <attribute name="invisible">True</attribute>
+                </xpath>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************** update xml record using xml_id***********************************
+
+
+
+<record id="real_estate_crm.lead_sales_person_onchange" model="base.automation">
+<field name="filter_domain" >[('cil_id', '=', False)]</field>
+    </record>
+
+
+
+
+
+
+
+
+
+
+******************************* redirect ************************************
+
+
+
+            if lead: 
+                    action = self.env.ref('crm.crm_lead_action_pipeline').read()[0]
+                    action['views'] = [(self.env.ref('crm.crm_lead_view_form').id, 'form')]
+                    action['res_id'] = lead.id
+                    action['view_type'] = 'form'
+                    action['target'] = 'new'
+                    raise RedirectWarning(f'The Number {number} Already Used in lead {lead.name} and phone {lead.phone}', action, ('Open lead'),{'name':'test','title':'test'})
+                # raise ValidationError(f'The Number {number} Already Used in lead {lead.name} and phone {lead.phone}')
+
+
+
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+<!-- <templates xml:space="preserve">
+    <t t-name="international_phone_widget.widget_template" owl="1">
+
+        <div class="row">
+            <div >
+                <input class="form-control o_input" type="tel" t-ref="phone" t-on-keyup="on_key_up_phone_input" t-attf-class="{{ state.phoneValid !== undefined  ? ( state.phoneValid ? '': 'o_field_invalid') : '' }}" />
+                <i t-attf-class="{{ state.phoneValid !== undefined  ? ( state.phoneValid ? 'fa fa-check text-success': '') : '' }}"/>
+
+
+                
+                <a t-if="props.record.data[props.name]" t-att-href="phoneHref" class="o_phone_form_link ms-3 d-inline-flex align-items-center">
+                    <i class="fa fa-phone"></i>
+                    <!-- <small class="fw-bold ms-1">Call</small> -->
+                </a>
+                <a t-if="props.record.data[props.name]" t-att-href="whatsappHref" class="o_phone_form_link ms-3 d-inline-flex align-items-center">
+                    <i class="fa fa-whatsapp"></i>
+                </a>
+                <a t-if="props.record.data[props.name]" t-att-href="truecallerHref" class="o_phone_form_link ms-3 d-inline-flex align-items-center">
+                    <i class="fa fa-search"></i>
+                </a>
+
+
+
+            </div>
+
+            <div >
+                <input class="form-control" t-att-id="props.id" t-ref="international_phone" t-att-value="state.international_phone" style="display:none;" readonly="1" required="1" />
+            </div>
+        </div>
+    </t>
+</templates> -->
+
+
+
+
+
+
+
+****************************** ++++++++++++++++++++++++++++++++ **********************************
+
+                            <field name="is_draft_stage" invisible="is_last_stage == True"/>
+
+
+            not_accepted_approvals = self.current_stage_approval_ids.filtered_domain([("state",'!=','Approved')]).mapped('code')
+
+
+
+
+
+
+
+******************************** ++++++++++++++++++++++++++++++++ ************************************
+
+ 'assets': {
+        'web.assets_backend': [
+            'international_phone_widget/static/src/components/*/*.js',
+            'international_phone_widget/static/src/components/*/*.xml',
+            'international_phone_widget/static/src/components/*/*.scss',
+        ],
+    },
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+
+.o-mail-Message-body {
+  direction: rtl;
+}
+
+
+
+
+
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+
+    def write(self, vals):
+        if not(len(vals)==1 and 'sequence' in vals.keys()):
+          if self.id == self.get_or_create_done_stage().id:
+            raise ValidationError ("you can't modify New nor Done stages")
+        return super(Stage,self).write(vals)
+****************************** hierachical ************************************
+hierachy
+    _parent_store = True
+    _parent_name = "parent_category_id"
+    parent_path=fields.Char('parent path',index=True)
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************

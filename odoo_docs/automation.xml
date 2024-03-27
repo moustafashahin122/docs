@@ -28,10 +28,50 @@
     </data>
 
 </odoo>
-
+sales_person_lead_form
+call_center_agent_lead_form
 
 
 self.env['ir.model.fields.selection'].search([('field_id','=',self.env.ref('crm.field_crm_lead__user_id').id)])
+
+            <xpath expr="//group[@name='lead_partner']/field[@name='partner_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//group[@name='opportunity_partner']/field[@name='partner_id']" position="attributes">
+                <!-- Add your fields here -->
+                <attribute name="invisible">True</attribute>
+
+            </xpath>
+
+
+  <xpath expr="//group[@name='lead_info']" position="attributes">
+                <attribute name="invisible">False</attribute>
+                <!-- Add your fields here -->
+            </xpath>
+
+
+
+
+
+
+
+crm
+
+
+    <xpath expr="//group[@name='lead_partner']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+            <xpath expr="//group[@name='opportunity_partner']" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+
+
+
+
+
+
+
 
 
 

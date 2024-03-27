@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="rtl.message_inherit" t-inherit="mail.Composer" t-inherit-mode="extension">
+
+        <xpath expr="//textarea" position="attributes">
+            <attribute name="dir">auto</attribute>
+        </xpath>
+    </t>
+</templates>
