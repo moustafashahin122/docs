@@ -1,0 +1,117 @@
+import numpy_financial as npf
+class PaymentPlan:
+    def __init__(self, n=24, rate=.3/4, initial_investment=0, round_value = 1):
+        self.n = n
+        self.rate = rate
+        self.initial_investment = initial_investment
+        self.round = round_value
+        self.total = 0
+    def set_cashflow(self, cashflow):
+        self.cashflow = cashflow
+    def set_bulk_payments(self, bulk_payments):
+        self.bulk_payments = bulk_payments
+        # round all the payments
+        self.bulk_payments = [(round(payment[0],self.round), payment[1]) for payment in self.bulk_payments]
+    def set_equal_payments(self, equal_payments):
+        self.equal_payments = round(equal_payments,self.round)
+    def set_initial_investment(self, initial_investment):
+        self.initial_investment = round(initial_investment,self.round)
+    def set_npv(self, npv):
+        self.npv = npv
+    def round_nearest(self,old_value, b):
+        thousands = 10**b
+        return (old_value+thousands)//thousands * thousands
+    def ciel_to_nearest(self, digits=3):
+        self.initial_investment = self.round_nearest(self.initial_investment, digits)
+        self.equal_payments = self.round_nearest(self.equal_payments, digits)
+        self.bulk_payments = [(self.round_nearest(payment[0], digits), payment[1]) for payment in self.bulk_payments]
+        return self
+    # def ciel_to_nearest(self, ciel_value):
+    #     self.initial_investment = self.initial_investment//ciel_value * ciel_value
+    #     self.equal_payments = self.equal_payments//ciel_value * ciel_value
+    #     self.bulk_payments = [(payment[0]//ciel_value * ciel_value, payment[1]) for payment in self.bulk_payments]
+    #     return self
+    def get_total(self):
+        self.total = self.initial_investment + sum([p[0] for p in self.bulk_payments]) + self.equal_payments*self.n
+        return self.total
+    def __str__(self) -> str:
+        print_str = ""
+        print_str += f"Initial Investment: {self.initial_investment:,}\n"
+        print_str += f"Equal Payments: {self.equal_payments:,}\n"
+        for p in self.bulk_payments:
+            # in years and months
+            print_str +=(f"Add {p[0]:,} to payment #{p[1]}\n")
+        total = self.initial_investment + sum([p[0] for p in self.bulk_payments]) + self.equal_payments*self.n
+        print_str += f"Total: {total:,}\n"
+        # print_str += f"NPV: {self.npv}\n"
+        return print_str
+
+class PaymentPlanCalculator:
+    def __init__(self, n=24, rate=.3/4):
+        self.n = n
+        self.rate = rate
+        self.payment_plan = PaymentPlan(n=n, rate=rate)
+
+    def add_bulk_payment(self, cashflow, index=0, amount=0):
+        bulk_payment = amount
+        cashflow[index] += bulk_payment
+        return cashflow
+    
+
+
+    def get_factor_from_future_percentages(self, initial_investment, bulk_payments,fv_total ):
+        down_payment = initial_investment * fv_total
+        equal_payment_percentages = 1 - sum([payment[0] for payment in bulk_payments]) - initial_investment
+        all_equal_payments = equal_payment_percentages * fv_total
+        cashflow = [all_equal_payments / self.n for i in range(self.n)]
+        cashflow.insert(0, down_payment)
+        for payment in bulk_payments:
+            cashflow = self.add_bulk_payment(cashflow, index=payment[1], amount=payment[0] * fv_total)
+        npv = npf.npv(self.rate, cashflow)
+        factor = sum(cashflow) / npv
+        return factor
+    
+
+
+    def from_future_percentages(self, factor = False ,initial_investment=.1, bulk_payments=[(.1, 4), (.1, 12)],fv_total = 100, pv=1800000):
+        equal_payment_percentages = 1 - sum([payment[0] for payment in bulk_payments]) - initial_investment
+        if not factor:
+            factor = self.get_factor_from_future_percentages( initial_investment=.1, bulk_payments=[(.1, 4), (.1, 12)],fv_total = 100)
+        plan = PaymentPlan(n=self.n, rate=self.rate)
+        plan.set_npv(pv)
+        fv = factor*pv
+        fv_bulk_payments = [(payment[0]*fv, payment[1]) for payment in bulk_payments]
+        plan.set_bulk_payments(fv_bulk_payments)
+        plan.set_initial_investment(initial_investment*fv)
+        plan.set_equal_payments(equal_payment_percentages*fv/self.n)
+       
+        return factor, plan
+    
+    def create_cashflow_at_index(self,index=0,amount=0, cashflow_length=0):
+        cashflow = [0 for i in range(cashflow_length)]
+        cashflow[index] = amount
+        return cashflow
+    
+
+    def get_factor_from_future_values(self, initial_investment ,installments , bulk_payments , pv):
+        total_payments_npv = 0
+        for payment in bulk_payments:
+            cf = self.create_cashflow_at_index(index=payment[1],amount=payment[0], cashflow_length=payment[1]+1)
+            npv=npf.npv(self.rate, cf)
+            total_payments_npv+=npv
+        amount_to_install = installments - total_payments_npv
+        equal_payments = npf.pmt(self.rate, self.n, -amount_to_install)
+        total_paid = equal_payments*self.n+sum(payment[0] for payment in bulk_payments)+initial_investment
+        factor = total_paid/pv
+        return factor,equal_payments
+    
+    def from_future_values(self,factor = False,initial_investment = 184000.00 ,installments = 816000.00,bulk_payments = [(184000,4),(184000,8)], print_plan=True, pv=1800000.00):
+        if not factor:
+            factor, equal_payments = self.get_factor_from_future_values(self,initial_investment = 184000.00 ,installments = 816000.00,bulk_payments = [(184000,4),(184000,8)], print_plan=True, pv=1800000.00)
+        self.payment_plan.set_bulk_payments(bulk_payments)
+        self.payment_plan.set_equal_payments(equal_payments)
+        self.payment_plan.set_initial_investment(initial_investment)
+        
+        return factor,self.payment_plan
+
+

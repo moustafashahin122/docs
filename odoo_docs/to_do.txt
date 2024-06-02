@@ -1,0 +1,11 @@
+age module 
+
+calculate age using timedelta and every week 
+
+
+
+membership module 
+
+use birthdate to update flags 
+
+

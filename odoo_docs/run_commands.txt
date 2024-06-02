@@ -1,0 +1,1 @@
+/opt/odoo17/beta_17_env/bin/python3  /opt/odoo17/test_odoo17/odoo-bin  -c /etc/test_odoo_17_beta.conf --logfile=  -p 8027 -d beta_17_test_stage

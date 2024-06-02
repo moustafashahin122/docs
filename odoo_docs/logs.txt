@@ -1,0 +1,26 @@
+
+
+dev:- 
+working branch:
+db:
+
+
+
+
+
+
+
+to apply the feature please:
+
+
+
+upgrade:
+	-
+	-
+	-
+
+install:
+	-
+	-
+	
+

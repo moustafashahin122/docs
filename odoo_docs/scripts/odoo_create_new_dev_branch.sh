@@ -13,6 +13,7 @@ backup_db_name="${git_branch}"
 
 # Drop the existing backup database if it exists
 dropdb "$backup_db_name" >/dev/null 
+rm -r ~/.local/share/Odoo/filestore/"$backup_db_name"  2> /dev/null
 
 # Create a new database with the provided name and set the owner to 'odoo'
 createdb --owner=metrics "$backup_db_name" >/dev/null 

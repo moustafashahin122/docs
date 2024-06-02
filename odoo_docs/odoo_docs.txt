@@ -1,3 +1,14 @@
+dependency check
+
+odoo_analyse --path /opt/odoo17/odoo17/epm-betaegypt/metrics_enterprise/ --show-dependency --skip-assets --skip-data --skip-language --skip-readme
+
+
+
+
+
+
+
+
 
 
 \{\{<a.*?\}\}
@@ -19,7 +30,7 @@ https://www.tutorialsteacher.com/python/public-private-protected-modifiers
 
 
 *********************************************************kill odoo process****************************************************************
-
+ssh -T git@github.com
 
 ps aux | grep odoo
 sudo kill 12345
@@ -897,6 +908,39 @@ end_of_the_day = datetime.combine(rec.day_date, datetime.max.time())
 
 
 
+
+
+
+
+
+
+
+from datetime import datetime, time
+
+date = datetime.now().date()
+specific_time= time(hour=16)
+datetime_obj = datetime.combine(date, specific_time)
+print("Datetime from:", datetime_obj)
+
+
+
+
+
+
+
+
+****************************** weekday ************************************
+
+import datetime
+
+# Create a datetime object for a specific date
+date = datetime.date(2024, 4, 1)
+datet = datetime.datetime(2024, 4, 1)
+
+# Get the day of the week (0 = Monday, 1 = Tuesday, ..., 6 = Sunday)
+day_of_week = datet.weekday()
+
+print(f"The day of the week for {date} is {day_of_week}.")
 
 ****************************** tree view header **********************************
 ////////// must select records to show
@@ -1854,7 +1898,7 @@ This module adds missing menus and view for OCA Bank Reconcilation Module and fi
 ****************************** this weeks leads  ************************************
 
 
-
+<filter string="Creation Date" name="creation_date" date="create_date"/>
                 
                 
                 
@@ -1894,6 +1938,8 @@ This module adds missing menus and view for OCA Bank Reconcilation Module and fi
 
 ==================================      xml    ===================================
 
+
+
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
@@ -1901,28 +1947,26 @@ This module adds missing menus and view for OCA Bank Reconcilation Module and fi
 
 
         <record id="res_config_settings_view_form_inherit" model="ir.ui.view">
-            <field name="name">res.config.settings.view.form.inherit</field>
+            <field name="name">res.config.secccccccttings.view.form.inherit</field>
             <field name="model">res.config.settings</field>
             <field name="inherit_id" ref="base.res_config_settings_view_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//form" position="inside">
 
-                    <app data-string="Real estate Inventory" string="Real estate Inventory" name="real_estate_inventory" groups="helpdesk_mgmt.group_helpdesk_manager">
-                        <block title="Real Estate Inventory">
+                    <app data-string="Real estate Inventory" string="Real estate Inventory" name="real_estate_inventory">
 
-                            <div class="row mt16 o_settings_container" name="booking_request_invoicing_product">
-                                <div class="col-12 col-lg-6 o_setting_box" id="booking_request_invoicing_product_1">
-                                    <div class="o_setting_right_pane" id="booking_request_invoicing_product_1_1">
+                        <block title="Accounting">
 
-                                        <label for="booking_request_invoicing_product_id" class="col-sm-5 col-form-label">
-                                    Booking Request Invoicing Product
-                                        </label>
-                                        <field name="booking_request_invoicing_product_id"/>
-
-                                    </div>
-                                </div>
-                            </div>
+                            <setting company_dependent="1" string="Booking Payment Journal" help="Payment method allowed for expenses paid by company.">
+                                <field name="booking_request_payment_journal_id" placeholder="All payment methods allowed" />
+                            </setting>
+                            <setting company_dependent="1" string="Booking Payment Method" help="Payment method allowed for expenses paid by company.">
+                                <field name="booking_request_payment_method_id" placeholder="All payment methods allowed" />
+                            </setting>
                         </block>
+
+
+
                     </app>
                 </xpath>
             </field>
@@ -1934,7 +1978,6 @@ This module adds missing menus and view for OCA Bank Reconcilation Module and fi
 
 
 </odoo>
-
 
 
 
@@ -1959,6 +2002,7 @@ class ResConfigSettings(models.TransientModel):
     booking_request_invoicing_product_id=fields.Many2one('product.template',string="Booking Request Invoicing Product", config_parameter='booking_request_invoicing.booking_request_invoicing_product_id_param', help='This is the product that is add to the invoice when you create booking request invoice')
 
 
+        unit_change_approval_type_id = self.env['ir.config_parameter'].get_param('contract_management.unit_change_approval_type_id')
 
 
 
@@ -2233,7 +2277,7 @@ like','WORK100'
 
 ****************************** action from python ***********************************
 
-            def base_automation_onchange(self):
+            def _onchange(self):
                 automation_rule = self.env['base.automation'].browse(automation_rule_id)
                 result = {}
                 actions = automation_rule.sudo().action_server_ids.with_context(
@@ -2448,7 +2492,7 @@ like','WORK100'
 
 
 
-******************************** ++++++++++++++++++++++++++++++++ ************************************
+******************************** /* ************************************
 
  'assets': {
         'web.assets_backend': [
@@ -2474,30 +2518,607 @@ like','WORK100'
 
 
 
-
-    def write(self, vals):
-        if not(len(vals)==1 and 'sequence' in vals.keys()):
-          if self.id == self.get_or_create_done_stage().id:
-            raise ValidationError ("you can't modify New nor Done stages")
-        return super(Stage,self).write(vals)
-****************************** hierachical ************************************
+****************************** hierachical panel ************************************
 hierachy
     _parent_store = True
     _parent_name = "parent_category_id"
     parent_path=fields.Char('parent path',index=True)
 
+****************************** create activity / notified user ************************************
+    notified_user_ids= fields.Many2many('res.users',string="Notified Users")
+
+    activity_type_id= fields.Many2one('mail.activity.type',string="Activity Type")
+    activity_summary= fields.Char(string="Activity Summary")
+    
+    
+    @api.constrains('notified_user_ids')
+    def _check_email_required(self):
+        for record in self:
+            for user in record.notified_user_ids:
+                if not user.partner_id.email:
+                    raise ValidationError(f"User {user.partner_id.name} must have an email address.")
+                    
+                    
+                    
+                    
+                    
+                    
+
+    def notify_notified_users(self):
+        if len(self.stage_id.notified_user_ids)>0 and len(self.stage_id.activity_type_id)>0:
+            for user in self.stage_id.notified_user_ids:
+                self.env["mail.activity"].create(
+                        {
+                            "activity_type_id": self.stage_id.activity_type_id.id,
+                            "summary":self.stage_id.activity_summary if self.stage_id.activity_summary else f"{self.contract_code} is now in stage '{self.stage_id.name}'",
+                            "res_id": self.id,
+                            "res_model_id": self.env['ir.model'].search([('name','=',self._name)],limit=1).id,
+                            "user_id": user.id,
+                        }
+                    )
+                    
+
+
+
+
+
+
+
+
+
+****************************** send email ************************************
+
+
+    def send_contract_stage_has_changed_email(self):
+        if len(self.stage_id.notified_user_ids)>0:
+            for user in self.stage_id.notified_user_ids:
+                email_to = user.partner_id.email
+                template_id = self.env.ref('contract_management.email_template_contract_stage_changed_for_notified_user_email_template')
+                email_values={"email_to":email_to}
+                mail_id=template_id.send_mail(self.id,email_values=email_values)
+                self.env['mail.mail'].browse(mail_id).send()
+
+
+
+
+
+
+
+
+****************************** expiry date ************************************
+
+
+
+
+  @api.depends('last_renew_date')
+    def _comput_expiry_date(self):
+        cil_config=self.env['cil.config'].search([],limit=1)
+        if len(cil_config) < 0 : raise ValidationError("Please Add At least on cil configuration")
+        cil_validity_period=self.env['cil.config'].search([],limit=1).cil_validity_period
+        if not cil_validity_period: raise ValidationError("CIL validity period is not set")
+        for rec in self:
+            if rec.last_renew_date:
+                rec.expiry_date =  rec.last_renew_date + timedelta(days=cil_validity_period)
+            elif rec.create_date:
+                rec.expiry_date =  rec.create_date.date() + timedelta(days=cil_validity_period)
+            else:
+                rec.expiry_date = fields.Date.today() + timedelta(days=cil_validity_period)
+                
+
+
+
+    def cron_update_state(self):
+        records=self.search([('expiry_date','!=',False)])
+        records._update_state()
+
+    def _update_state(self):
+        for rec in self:
+            if rec.expiry_date and (fields.Date.today() > rec.expiry_date) :
+                rec.state = 'expired'
+            else:
+                rec.state = 'active'
+
+        
+    def _compute_duration_info(self):
+
+        for rec in self:
+            # if  rec.expiry_date >= fields.Date.today():
+            if  rec.expiry_date:
+                
+                remaining_period = fields.Date.today() - rec.expiry_date
+                days = remaining_period.days
+                hours = floor(remaining_period.seconds / 3600)
+                rec.duration_info = (f" Remaining {abs(days)} days to expire ") if days < 0 else (f" Expired {days} days ago ")
+            else:
+                rec.duration_info=""
+
+
+
+
+==============================================================================================================================
+==============================================================================================================================
+==============================================================================================================================
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
+class CilConfig(models.Model):
+    _name = 'cil.config'
+    _description = 'Cil Config'
+    
+
+    notified_user_ids= fields.Many2many('res.users',string="Notified Users")
+
+    activity_type_id= fields.Many2one('mail.activity.type',string="Activity Type")
+    activity_summary= fields.Char(string="Activity Summary")
+    
+    
+    @api.constrains('notified_user_ids')
+    def _check_email_required(self):
+        for record in self:
+            for user in record.notified_user_ids:
+                if not user.partner_id.email:
+                    raise ValidationError(f"User {user.partner_id.name} must have an email address.")
+                    
+                    
+
+
+    cil_validity_period = fields.Integer(string="CIL Validity Period", help='The validity period after which the CIL can be converted to direct lead')
+
+    action_server_ids = fields.Many2many(comodel_name="ir.actions.server", string="Actions")
+
+
+
+
+    @api.model
+    def create(self,vals):
+        if len(self.search([])) > 0 : raise ValidationError('There already exists a configuration for cil')
+
+        return super(CilConfig,self).create(vals)
+
+
+
+==============================================================================================================================
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <data>
+        <record id="ir_cron_scheduler_recurring_action" model="ir.cron">
+            <field name="name">CIL: update is expired</field>
+            <field name="model_id" ref="model_cil_cil" />
+            <field name="state">code</field>
+            <field name="code"> model.cron_update_state()</field>
+
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">True</field>
+            <field name="nextcall" eval="(DateTime.now().replace(hour=22,minute=1,second=0) ).strftime('%Y-%m-%d %H:%M:%S')" />
+        </record>
+
+
+    </data>
+
+
+</odoo>
+
+
+
+
+==============================================================================================================================
+
+
+
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
+
+    def action_create_step_approval(self,inverse_name):
+        for step in self:
+            approval= [{"type_id":step.type_id.id,inverse_name:step[inverse_name].id,'step_id':step.id,'name':step.type_id.name}]
+            self.env['contract.multi.approval'].create(approval).action_submit()
+            
+
+
+
+
+
+
+
+
+****************************** wizard ************************************
+
+        <record id="ft_divorce_wife_wizard_view_form" model="ir.ui.view">
+            <field name="name">ft.divorce.wife.wizard.view.form</field>
+            <field name="model">ft.divorce.wife.wizard</field>
+            <field name="arch" type="xml">
+                <form >
+                    <sheet>
+                        <group>
+                            <field name="husband_id" readonly="1" />
+                            <field name="wife_id"  />
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_divorce_wife" string="Divorce Wife" type="object" class="btn-primary" data-hotkey="q" />
+                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+
+
+
+****************************** send sms ***********************************
+            self.env['sms.sms'].create({'partner_id':my_otp.res_id,'number':my_otp.phone_number,'body':f"Your OTP for verification is: {my_otp.otp}"})._send()
+
+
+
+
+
+
+
+
+
+
+******************************* search domain ************************************
+
+Search domains
+A domain is a list of criteria, each criterion being a triple (either a list or a tuple) of (field_name, operator, value) where:
+
+field_name (str)
+a field name of the current model, or a relationship traversal through a Many2one using dot-notation e.g. 'street' or 'partner_id.country'
+
+operator (str)
+an operator used to compare the field_name with the value. Valid operators are:
+
+=
+equals to
+
+!=
+not equals to
+
+>
+greater than
+
+>=
+greater than or equal to
+
+<
+less than
+
+<=
+less than or equal to
+
+=?
+unset or equals to (returns true if value is either None or False, otherwise behaves like =)
+
+=like
+matches field_name against the value pattern. An underscore _ in the pattern stands for (matches) any single character; a percent sign % matches any string of zero or more characters.
+
+like
+matches field_name against the %value% pattern. Similar to =like but wraps value with ‘%’ before matching
+
+not like
+doesn’t match against the %value% pattern
+
+ilike
+case insensitive like
+
+not ilike
+case insensitive not like
+
+=ilike
+case insensitive =like
+
+in
+is equal to any of the items from value, value should be a list of items
+
+not in
+is unequal to all of the items from value
+
+child_of
+is a child (descendant) of a value record (value can be either one item or a list of items).
+
+Takes the semantics of the model into account (i.e following the relationship field named by _parent_name).
+
+parent_of
+is a parent (ascendant) of a value record (value can be either one item or a list of items).
+
+Takes the semantics of the model into account (i.e following the relationship field named by _parent_name).
+
+any
+matches if any record in the relationship traversal through field_name (Many2one, One2many, or Many2many) satisfies the provided domain value.
+
+not any
+matches if no record in the relationship traversal through field_name (Many2one, One2many, or Many2many) satisfies the provided domain value.
+
+value
+variable type, must be comparable (through operator) to the named field.
+
+Domain criteria can be combined using logical operators in prefix form:
+
+'&'
+logical AND, default operation to combine criteria following one another. Arity 2 (uses the next 2 criteria or combinations).
+
+'|'
+logical OR, arity 2.
+
+'!'
+logical NOT, arity 1.
+
+
+
+
+
+
+
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+
+
+
+
+        <div id="wrap">
+                    <div class="container">
+                        <div class="col-md-12">
+                            <h2>Customer Service Visits</h2>
+                            <!-- <form action="/visits/form/submit" class="visits_otp_form" enctype="multipart/form-data" method="post"> -->
+
+
+                                <div class="form-group" style="margin:15px;">
+                                    <label for="phone_number">Phone:</label>
+                                    <input type="text" inputmode="numeric" default_focus="1" class="form-control" name="phone_number" id="phone_number" required="true" style=" height: 35px;" />
+                                </div>
+                                <div class="form-group" style="margin:15px;">
+                                    <input type="text" default_focus="1"  name="correct_phone_number" id="correct_phone_number" style="display:none;" />
+                                </div>
+                                <button id="start_journey" class="btn btn-primary" style="margin:15px;" t-on-click="palert">Start</button>
+
+                                <div class="col-md-12">
+                                    <div class="alert alert-warning" style="display:none;">
+                                    This number isn't in our database
+                                    </div>
+                                </div>
+
+                                <div id="otp_div" class="form-group" style="margin:15px; display:none;">
+                                    <label for="otp">OTP:</label>
+                                    <input type="text" inputmode="numeric"  name="otp" id="otp" required="true" style=" height: 35px;" />
+                                </div>
+                                <div class="col-md-12">
+                                    <div id="otp_error_div" class="alert alert-danger" style="display:none;">
+                                    Wrong </div>
+                                </div>
+
+
+
+                                <!-- <div class="form-group" style="margin:15px;">
+                                <label for="description">Description:</label>
+                                <input type="text"  name="description" id="description" required="true" t-att-value="name" />
+                            </div> -->
+                                <button id="generate_otp" class="btn btn-primary" style="margin:15px;display:none;">Genrate OTP</button>
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger" style="display:none;">
+                                    Failed To Send OTP 
+                                    </div>
+                                </div>
+                                <button id="authenticate" class="btn btn-primary" style="margin:15px;display:none;">Authenticate</button>
+
+
+
+                                <div id="visit_info" style="display:none;">
+
+
+
+
+                                    <div class="form-group" style="margin:15px;">
+                                        <label for="unit_id">Unit:</label>
+                                        <select id="unit_id" name="unit_id" required="True"  style=" height: 35px;">
+                                            <t t-foreach="units" t-as="unit">
+                                                <option t-att-value="unit.id" t-esc="unit.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+
+
+
+
+
+                                    <div class="form-group" style="margin:15px;">
+                                        <label for="category_id">Category:</label>
+                                        <select id="category_id" name="helpdesk_category_id" required="True"  style=" height: 35px;">
+                                            <t t-foreach="categories" t-as="category">
+                                                <option t-att-value="category.id" t-esc="category.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin:15px;">
+                                        <label for="team_id">Team:</label>
+                                        <select id="team_id" name="helpdesk_team_id" required="True"  style=" height: 35px;">
+                                            <t t-foreach="teams" t-as="team">
+                                                <option t-att-value="team.id" t-esc="team.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin:15px;">
+                                        <label for="time_id">Visit Time:</label>
+                                        <select id="time_id" name="date_time_selection" required="True"  style=" height: 35px;">
+                                            <t t-foreach="available_times" t-as="time">
+                                                <option t-att-value="time.id" t-esc="time.name"/>
+                                            </t>
+                                        </select>
+                                    </div>
+                                    <!-- <div class="form-group" style="margin:15px;">
+                                <label for="description">Description:</label>
+                                <input type="text" class="form-control" name="description" id="description" required="true" t-att-value="name" />
+                            </div> -->
+                                    <button type="submit" class="btn btn-primary" style="margin:15px;">Submit</button>
+
+
+
+                                </div>
+
+
+
+
+
+
+                            <!-- </form> -->
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+****************************** ++++++++++++++++++++++++++++++++ *******************************
+
+
+https://www.odoo.com/thanks/trial?app=website%3Acrm%3Asale_management%3Aaccount_accountant%3Ahelpdesk&dbname=shahin2&re=https%3A%2F%2Feu320a.odoo.com%2Fsaas_worker%2Ftrial_do%3Flang%3Den_US%26module%3Dwebsite%253Acrm%253Asale_management%253Aaccount_accountant%253Ahelpdesk%26template%3D%26studio_module%3D%26dbname%3Dshahin2%26client_id%3Df0247ae4-e1c7-47a5-860e-60323a7a9919%26country_code%3DEG%26company_name%3Dshahin%26email%3Dmoustafashahin122%2540gmail.com%26sync_after_creation%3DFalse%26username%3DMoustafa%2BShahin%26confirm_token%3DgAAAAABmH-tFN-YlvEcuZBS5SzONuDtVfrrUWCU-1dEjeJz-nZdlYqTtfvORibGCqyJBosMiGxCOMkFZntF_NUeU8EClcfXZzZ0ZLmmZkLXniu69t6-kQv7cWLdXWCgcf9SzoBFWTicw%26_ms%3DgAAAAABmH-tFN_63FO-xtywvcnI-42en4LY1EZmgF7BmZZAHCR7-8w3p8ecSnYjrwdZVQ4D--5jtjt7Z86IpURddv5ptfrW3BFUKpaTtCZ-AX02JYpq_GHGwTfWnZSfzj2wFHc3LJGm607e9LDxjTgRxQNbmIAGjVfcXfmrbrAxjfxZhppqsRck%253D
+
+
+
+
+
+*********************************** show image in a template ************************************
+
+
+
+                        <img t-attf-src="data:image;base64,{{workflow.image}}" class="menu-img img-fluid" />
+                    <field name="image" widget="image" class="rounded" options="{'size': [90, 90]}"/>
+
+
+                                    <img t-att-src="kanban_image('workflow.workflow', 'image', record.id.raw_value)" class="w-100 rounded" alt="Icon"/>
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+upgrade
+button_immediate_upgrade
+****************************** add user and group ***********************************
+
+       <record id="user_client_admin" model="res.users">
+            <field name="name">Client Admin</field>
+            <field name="login">client_admin</field>
+            <field name="password">client_admin</field>
+        </record>
+
+        <record id="group_client_admin" model="res.groups">
+            <field name="name">Client Admin Group</field>
+            <field name="implied_ids" eval="[Command.link(ref('base.group_user'))]"/>
+
+            <field name="users" eval="[ (4, ref('workflow_users.user_client_admin'))]"/>
+
+
+        </record>
+
+
+
+
+******************************* refused ************************************
+
+    state = fields.Selection(
+        [('Draft', 'Draft'),
+         ('Submitted', 'Submitted'),
+         ('Approved', 'Approved'),
+         ('Refused', 'Refused'),
+         ('Cancel', 'Cancel')], default='Draft', tracking=True)
+
+
+
+
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+booking_request_invoicing
+booking_request_payment
+real_estate_inventory
+
+approval_for_multiple_things
+contract_management
+
+****************************** ++++++++++++++++++++++++++++++++ **********************************
+
+
+
+uninstall
+booking_request_invoicing *if installed
+please install
+booking_request_payment
+please upgrade
+real_estate_inventory
+finance
+finance_advanced
+approval_for_multiple_things
+contract_management
+generic_contract
+
+
+
+
+
+******************************** ++++++++++++++++++++++++++++++++ ************************************
+
+
+
+from odoo import _, api, fields, models
+
+
+class PaymentPlanPayment(models.AbstractModel):
+    _name = 'finance.payment'
+    _description = 'Payment plan payment'
+    _order = 'sequence asc'
+
+
+
+class PolicyBulkPayments(models.AbstractModel):
+    _name = 'finance.payment_plan_structure_bulk_payments'
+    _description = "Payment Plan Bulk Payments"
+    _order = 'sequence asc'
+    
+    
+    
+
+class PaymentPlan(models.AbstractModel):
+    _name = 'finance.payment_plan'
+    _description = 'Real Estate Payment Plans'
+
+****************************** Kanban view ribbon ************************************
+  <kanban
+                    string="Automation Rules"
+                    class="o_base_automation_kanban_view"
+                    records_draggable="false"
+                    groups_draggable="false"
+                    quick_create="false"
+                    group_create="false"
+                    group_edit="false"
+                    group_delete="false"
+                >
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <field name="active" invisible="1" />
+                                <field name="model_name" invisible="1" />
+                                <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active" />
+                                <div class="d-flex flex-column flex-md-row gap-3 flex-grow-1">
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
