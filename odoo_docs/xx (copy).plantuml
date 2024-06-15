@@ -1,0 +1,26 @@
+@startuml 
+start
+title Get Rotating Team Members
+
+:Get All Team members;
+:filter only rotating members;
+if(len(filtered team members) == 0) then (yes) 
+:return All team members;
+else (no)
+:return filtered Members;
+endif
+' :Get Rotating Team Members;
+
+if (Last rotated user is known) then (yes)
+    :reorder the members;
+    note right
+such that first member to test (if working)
+ is the member after last member;
+ 
+end note
+else(no)
+endif
+    :Return Rotating Team Members;
+
+stop
+@enduml
