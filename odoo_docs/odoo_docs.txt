@@ -3,7 +3,7 @@ dependency check
 odoo_analyse --path /opt/odoo17/odoo17/epm-betaegypt/metrics_enterprise/ --show-dependency --skip-assets --skip-data --skip-language --skip-readme
 
 
-
+odoo_analyse -c /etc/odoo_17_beta.conf --show-dependency --skip-all
 
 
 ****************************************************************************************************************************************
@@ -42,9 +42,36 @@ ps aux | grep odoo
 sudo kill 12345
 sudo kill -9 118115
 
+*********************************************************submodule****************************************************************
 
 
 
+
+
+
+
+
+
+
+
+(beta_env) metrics@shahin:/opt/odoo15/odoo15/epm-betaegypt$ git submodule add --force -b 15.0 git@github.com:Metrics-eg/odoo-paymob.git metrics_enterprise/wt_payment_paymob
+
+
+
+git submodule update
+
+
+
+
+
+
+
+*********************************************************clone submodule****************************************************************
+
+
+git clone --recurse-submodules https://github.com/chaconinc/MainProject
+
+or clone then git git submodule init and git submodule update 
 
 *********************************************************regex****************************************************************
 
@@ -303,6 +330,28 @@ git rm --cached '*.pyc'
                 rec.car_id = False
     def action_create_repair_order(self):
         self.ensure_one()
+
+
+****************************************************smart button without count *************************************************************
+ <button name="action_open_original" type="object" class="oe_stat_button"
+                    icon="fa-pencil-square-o" invisible="not original_structure_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">
+                            Original Structure
+                        </span>
+
+                    </div>
+                    <!-- <field name="variants_count" widget="statinfo" string="Original" /> -->
+                </button>
+
+
+
+
+
+
+
+
+
 
 
 ****************************** vs code debugger ************************************
@@ -674,7 +723,7 @@ value_if_true if condition else value_if_false
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>
-            <field name="doall">True</field>
+            <field name="doall">False</field>
             <field name="nextcall"
                 eval="(DateTime.now().replace(hour=22,minute=1,second=0) ).strftime('%Y-%m-%d %H:%M:%S')" />
         </record>
@@ -1940,6 +1989,14 @@ This module adds missing menus and view for OCA Bank Reconcilation Module and fi
     </record>
 
 ****************************** add setting to module ********************************
+           <block title="Attendance Compensation">
+                        <h2>Attendance Compensation</h2>
+                        <setting company_dependent="1" string="Attendance Compensation Leave Type"
+                            help="This is leave type of compensation holiday">
+                            <field name="compensation_holiday_status_id"
+                                placeholder="leave type of compensation holiday" />
+                        </setting>
+                    </block>
 
 
 ==================================      xml    ===================================
@@ -3296,15 +3353,202 @@ SL-F-6-03
 
 
 
-************************ ++++++++++++++++++++++++++++++++ ************************************
+************************ kanban view in form view ************************************
+
+
+
+
+                        <field name="contract_partner_ids" mode="kanban" readonly="1"/>
+
+****************************** date range ************************************
+
+
+
+                                <label for="date_from" string="Dates"
+                                />
+                                <div class="o_row">
+                                    <field name="date_from" widget="date" />
+                                    <i class="fa fa-long-arrow-right" title="to" />
+                                    <field name="date_to" widget="date" />
+                                </div>
+****************************** status bar visible ************************************
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submitted,approved" options="{'clickable':'1'}"
+
+****************************** search with data ************************************
+def cron_separation_status(self):
+        birthdate_of_25_years_old=fields.Date.today()-relativedelta(years=25)
+        warning_date =  birthdate_of_25_years_old+relativedelta(months=12 - self._separation_warning_month)
+
+
+        
+        records= self.search([('membership_status','=','active'),('parent_membership_id','!=',False),('birthdate','<=',warning_date)])
+
+        records._compute_separtion_status(birthdate_of_25_years_old,warning_date)
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+        <record id="product_template_tree_view_inherit" model="ir.ui.view">
+            <field name="name">product.template.view.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view" />
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+
+                    <button string="Academy Partners" name="action_view_academy_partners"
+                        type="object"
+                        class="oe_highlight" />
+                </xpath>
+            </field>
+        </record>
+
+****************************** git first and last day of month ************************************
+from dateutil.relativedelta import relativedelta
+
+last_date_of_month = datetime(mydate.year, mydate.month, 1) + relativedelta(months=1, days=-1)
+
+****************************** get date from string ************************************
+
+        start_date = datetime.strptime(kw.get('start_date'), '%Y-%m-%d').date()
+
+****************************** search dates ************************************
+
+    def cron_separation_status(self):
+        birthdate_of_25_years_old=fields.Date.today()-relativedelta(years=25)
+        warning_date =  birthdate_of_25_years_old+relativedelta(months=12 - self._separation_warning_month)
+
+        records_to_separate = self.search([('membership_status','=','active'),('parent_membership_id','!=',False),('birthdate','<=',birthdate_of_25_years_old)])
+        records_to_separate.write({'separation_required':True,'separation_warning':False})
+        
+        records_to_warn= self.search([('membership_status','=','active'),('parent_membership_id','!=',False),('separation_required','=',False),('birthdate','<=',warning_date),('birthdate','>',birthdate_of_25_years_old)])
+        records_to_warn.write({'separation_warning':True})
+
+
+****************************** js import  ********************************
+
+
+
+Odoo needs a way to determine if a module is described by a path (like ./views/form_view) or a name (like web.FormView). It has to use a heuristic to do just that: if there is a / in the name, it is considered a path. This means that Odoo does not really support module names with a / anymore.
+
+
+odoo.define(
+  "sport_academies.academy_subscription_form",
+
+  function (require) {
+    "use strict";
+
+    const publicWidget = require("web.public.widget");
+
+
+    const { useService } = require("@web/core/utils/hooks");
+
+
+
+
+
+/** @odoo-module **/
+
+import publicWidget from "@web/legacy/js/public/public_widget";
+console.log("🚀 ~ file: copy_link.js:2 ~ publicWidget:", publicWidget);
+
+publicWidget.registry.CopyLink = publicWidget.Widget.extend({
+  selector: "#copy-webpage-btn",
+  events: {
+    click: "_onClickCopyLink",
+  },
+
+  init() {
+    this._super(...arguments);
+    this.notification = this.bindService("notification");
+    console.log("🚀 ~ file: copy_link.js:15 ~ init ~ this.notification:", this.notification)
+  },
+
+
+
+********************************** Translate ************************************
+
+                // "-l",
+                // "ar_EG",
+                // "--i18n-export",
+                // "/opt/odoo15/odoo15/epm-betaegypt/metrics_enterprise/sport_academies/i18n/ar_001.pot",
+                // "--modules",
+                // "sport_academies",
+
+
+****************************** assets in odoo ************************************
+
+
+
+
+
+
+
+
+'assets': {
+    'web.assets_backend': [
+        'web/static/src/xml/**/*',
+    ],
+    'web.assets_common': [
+        'web/static/lib/bootstrap/**/*',
+        'web/static/src/js/boot.js',
+        'web/static/src/js/webclient.js',
+        'web/static/src/xml/webclient.xml',
+    ],
+    'web.qunit_suite_tests': [
+        'web/static/src/js/webclient_tests.js',
+    ],
+},
+****************************** add admin admin ************************************
+
+UPDATE public.res_users
+SET active=true, login='ccccccccccc'
+WHERE login='admin';
+
+UPDATE public.res_users
+SET active=true, login='admin', "password"='admin'
+WHERE login='yussuf@metrics.com.eg';
+
+
+
+
+
+
+****************************** PDF Report ************************************
+
+preview
+http://localhost:8015/report/pdf/assets_pdf_report.asset_report_temp/324
+
+
+
+
+
+
+    <template id="asset_report_temp">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.internal_layout">
+                    <div class="page">
+                        <div class="oe_structure" />
+                        <h2>Product Report</h2>
+                        <p>
+                            <span t-field="o.name" />
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+    <record id="action_report_asset" model="ir.actions.report">
+        <field name="name">Asset Report</field>
+        <field name="model">account.asset.asset</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">assets_pdf_report.asset_report_temp</field>
+        <field name="report_file">assets_pdf_report.asset_report_temp</field>
+        <field name="print_report_name">'Asset-%s' % object.name</field>
+        <field name="binding_model_id" ref="om_account_asset.model_account_asset_asset" />
+        <field name="binding_type">report</field>
+    </record>
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************

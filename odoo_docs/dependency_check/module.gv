@@ -1,0 +1,326 @@
+digraph {
+	hr_employee_transfer
+	hr_employee_transfer -> hr_employee_updation
+	om_recurring_payments
+	partner_ledger_smart_view
+	partner_ledger_smart_view -> dynamic_accounts_report
+	contract_change_request
+	contract_change_request -> approvals_for_multiple_things
+	contract_change_request -> contract_management
+	contract_change_request -> multi_level_approval
+	contract_change_request -> real_estate_inventory
+	booking_request_payment
+	booking_request_payment -> real_estate_booking
+	booking_request_payment -> generic_contract
+	booking_request_payment -> finance_advanced
+	booking_request_payment -> contract_management
+	booking_request_payment -> pdc_cheque_management
+	booking_request_payment -> finance
+	booking_request_payment -> real_estate_inventory
+	real_estate_inventory
+	real_estate_inventory -> real_estate_broker
+	real_estate_inventory -> sales_team_leader_restrict_access
+	real_estate_inventory -> international_phone_widget
+	real_estate_inventory -> operations_team
+	sales_team_leader_restrict_access
+	otp
+	otp -> sms_egypt
+	visits_web_form
+	visits_web_form -> real_estate_crm
+	visits_web_form -> real_estate_helpdesk_visits
+	visits_web_form -> real_estate_helpdesk
+	visits_web_form -> otp
+	real_estate_crm
+	real_estate_crm -> real_estate_broker
+	real_estate_crm -> sales_team_leader_restrict_access
+	real_estate_crm -> international_phone_widget
+	real_estate_crm -> real_estate_inventory
+	real_estate_broker
+	real_estate_broker -> sales_team_leader_restrict_access
+	hr_raw_zte_attendance
+	hr_raw_zte_attendance -> hr_payroll_community
+	real_estate_helpdesk_visits
+	real_estate_helpdesk_visits -> real_estate_helpdesk
+	real_estate_helpdesk_visits -> real_estate_inventory
+	real_estate_helpdesk_visits -> helpdesk_mgmt
+	real_estate_helpdesk_visits -> general_visits_booking
+	real_estate_helpdesk_visits -> real_estate_call_center
+	helpdesk_mgmtsystem_nonconformity
+	helpdesk_mgmtsystem_nonconformity -> helpdesk_mgmt
+	js_front_utils
+	knowledge
+	real_estate_eoi
+	real_estate_eoi -> real_estate_inventory
+	mail_tracking
+	report_xlsx_helper
+	report_xlsx_helper -> report_xlsx
+	account_statement_base
+	om_account_daily_reports
+	hr_resignation
+	hr_resignation -> hr_employee_updation
+	report_xlsx
+	workflow_users
+	helpdesk_mgmt_project
+	helpdesk_mgmt_project -> helpdesk_mgmt
+	hr_reminder
+	onboarding_crm
+	onboarding_crm -> spiffy_theme_backend
+	onboarding_crm -> health_api
+	helpdesk_type
+	helpdesk_type -> helpdesk_mgmt
+	finance
+	finance -> validation_mixin
+	finance -> real_estate_inventory
+	account_reconcile_oca
+	account_reconcile_oca -> account_statement_base
+	account_reconcile_oca -> account_reconcile_model_oca
+	mass_mailing_partner
+	om_account_budget
+	document_page_approval
+	document_page_approval -> document_page
+	helpdesk_ticket_configuration
+	helpdesk_ticket_configuration -> helpdesk_mgmt
+	hr_multi_company
+	hr_multi_company -> hr_payroll_community
+	hr_multi_company -> hr_employee_transfer
+	muk_web_chatter
+	pdc_account
+	pdc_account -> pdc_cheque_management
+	oh_employee_documents_expiry
+	bulma_lib
+	real_estate_website_plan
+	real_estate_website_plan -> js_front_utils
+	real_estate_website_plan -> real_estate_inventory_website_ui
+	real_estate_website_plan -> bulma_lib
+	real_estate_website_plan -> finance_advanced
+	real_estate_website_plan -> real_estate_inventory
+	ohrms_core
+	ohrms_core -> hr_multi_company
+	ohrms_core -> ohrms_loan_accounting
+	ohrms_core -> ohrms_salary_advance
+	ohrms_core -> hr_leave_request_aliasing
+	ohrms_core -> oh_employee_documents_expiry
+	ohrms_core -> hr_reward_warning
+	ohrms_core -> hr_reminder
+	ohrms_core -> hr_payroll_community
+	ohrms_core -> hr_employee_updation
+	mass_mailing_subscription_date
+	email_template_qweb
+	real_estate_call_center
+	real_estate_call_center -> helpdesk_mgmt
+	report_templates
+	mail_attach_existing_attachment
+	sms_egypt
+	metrics_finance_apps_order
+	metrics_finance_apps_order -> finance
+	approvals_for_multiple_things
+	approvals_for_multiple_things -> multi_level_approval
+	validation_mixin
+	metrics_demo
+	metrics_demo -> real_estate_crm
+	health_api
+	pdc_cheque_management
+	pdc_cheque_management -> om_account_accountant
+	general_visits_booking
+	disable_odoo_online
+	muk_web_dialog
+	real_estate_booking
+	real_estate_booking -> real_estate_crm
+	real_estate_booking -> validation_mixin
+	real_estate_booking -> finance_advanced
+	real_estate_booking -> contract_management
+	real_estate_booking -> finance
+	real_estate_booking -> real_estate_inventory
+	ohrms_salary_advance
+	ohrms_salary_advance -> hr_payroll_community
+	ohrms_salary_advance -> ohrms_loan
+	dynamic_accounts_report
+	dynamic_accounts_report -> om_account_accountant
+	spiffy_theme_backend
+	spiffy_theme_backend -> disable_odoo_online
+	safe_view
+	safe_view -> om_account_accountant
+	safe_view -> pdc_cheque_management
+	hr_advanced_validation
+	hr_advanced_validation -> hr_payroll_community
+	hr_advanced_validation -> hr_custom_contract
+	operations_team
+	real_estate_sale_mgmt
+	real_estate_sale_mgmt -> real_estate_booking
+	real_estate_sale_mgmt -> contract_management
+	real_estate_sale_mgmt -> real_estate_inventory
+	generic_contract
+	generic_contract -> partner_age
+	generic_contract -> approvals_for_multiple_things
+	generic_contract -> multi_level_approval
+	generic_contract -> real_estate_inventory
+	helpdesk_rotational
+	helpdesk_rotational -> helpdesk_mgmt
+	mail_drop_target
+	mail_drop_target -> web_drop_target
+	account_reconcile_model_oca
+	unit_follow_report
+	unit_follow_report -> report_templates
+	unit_follow_report -> pdc_cheque_management
+	unit_follow_report -> real_estate_inventory
+	birthday_sms
+	birthday_sms -> partner_age
+	birthday_sms -> real_estate_inventory
+	birthday_sms -> sms_egypt
+	employee_appraisal
+	employee_appraisal -> hr_payroll_community
+	mail_inline_css
+	mail_inline_css -> email_template_qweb
+	mail_tracking_mass_mailing
+	mail_tracking_mass_mailing -> mail_tracking
+	hr_contract_types
+	document_page_reference
+	document_page_reference -> document_page
+	dms
+	dms -> web_drop_target
+	dms -> mail_preview_base
+	mail_activity_partner
+	mail_activity_partner -> mail_activity_board
+	om_account_accountant
+	om_account_accountant -> om_account_daily_reports
+	om_account_accountant -> om_recurring_payments
+	om_account_accountant -> om_fiscal_year
+	om_account_accountant -> accounting_pdf_reports
+	om_account_accountant -> om_account_followup
+	om_account_accountant -> om_account_asset
+	om_account_accountant -> om_account_budget
+	mail_attach_existing_attachment_account
+	mail_attach_existing_attachment_account -> mail_attach_existing_attachment
+	account_cosmetics
+	account_cosmetics -> om_account_accountant
+	real_estate_helpdesk
+	real_estate_helpdesk -> helpdesk_mgmt
+	real_estate_helpdesk -> real_estate_inventory
+	client_introduction_letter
+	client_introduction_letter -> real_estate_crm
+	client_introduction_letter -> international_phone_widget
+	client_introduction_letter -> real_estate_call_center
+	client_introduction_letter -> real_estate_inventory
+	hr_leave_request_aliasing
+	om_fiscal_year
+	mail_tracking_mailgun
+	mail_tracking_mailgun -> mail_tracking
+	real_estate_inventory_website_ui
+	real_estate_inventory_website_ui -> js_front_utils
+	real_estate_inventory_website_ui -> bulma_lib
+	real_estate_inventory_website_ui -> real_estate_inventory
+	om_account_followup
+	theme_real_estate
+	theme_real_estate -> theme_common
+	document_page_tag
+	document_page_tag -> document_page
+	hr_batch_payslip_action
+	hr_batch_payslip_action -> hr_payroll_community
+	hr_batch_payslip_action -> attendance_advanced
+	sms_egypt_helpdesk
+	sms_egypt_helpdesk -> helpdesk_mgmt
+	sms_egypt_helpdesk -> sms_egypt
+	hr_reward_warning
+	finance_advanced
+	finance_advanced -> approvals_for_multiple_things
+	finance_advanced -> multi_level_approval
+	finance_advanced -> finance
+	hr_payroll_account_community
+	hr_payroll_account_community -> hr_payroll_community
+	pdc_real_estate
+	pdc_real_estate -> pdc_account
+	pdc_real_estate -> pdc_cheque_management
+	pdc_real_estate -> real_estate_inventory
+	partner_statement
+	partner_statement -> report_xlsx
+	partner_statement -> report_xlsx_helper
+	theme_common
+	mail_preview_audio
+	mail_preview_audio -> mail_preview_base
+	mass_mailing_contact_partner
+	izi_dashboard
+	izi_dashboard -> izi_data
+	mail_activity_team
+	mail_activity_team -> mail_activity_board
+	muk_web_colors
+	accounting_pdf_reports
+	multi_level_approval
+	partner_age
+	muk_web_appsbar
+	contract_management
+	contract_management -> report_templates
+	contract_management -> multi_level_approval
+	contract_management -> approvals_for_multiple_things
+	contract_management -> generic_contract
+	contract_management -> finance
+	contract_management -> real_estate_inventory
+	izi_data
+	om_account_asset
+	mail_activity_board
+	contract_payments_cheques
+	contract_payments_cheques -> generic_contract
+	contract_payments_cheques -> finance_advanced
+	contract_payments_cheques -> contract_management
+	contract_payments_cheques -> pdc_cheque_management
+	contract_payments_cheques -> finance
+	contract_payments_cheques -> booking_request_payment
+	ohrms_loan_accounting
+	ohrms_loan_accounting -> hr_payroll_community
+	ohrms_loan_accounting -> ohrms_loan
+	club_membership
+	club_membership -> partner_age
+	club_membership -> family_tree
+	club_membership -> generic_contract
+	ohrms_loan
+	ohrms_loan -> hr_payroll_community
+	mail_preview_base
+	muk_web_theme
+	muk_web_theme -> muk_web_colors
+	muk_web_theme -> muk_web_dialog
+	muk_web_theme -> muk_web_appsbar
+	muk_web_theme -> muk_web_chatter
+	helpdesk_mgmt
+	helpdesk_cosmatics
+	helpdesk_cosmatics -> helpdesk_mgmt_project
+	helpdesk_cosmatics -> real_estate_helpdesk_visits
+	helpdesk_cosmatics -> helpdesk_mgmt
+	web_responsive
+	web_responsive -> muk_web_colors
+	metrics_sales_apps_order
+	metrics_sales_apps_order -> real_estate_inventory
+	oca_bank_reconciliation_cosmatics
+	oca_bank_reconciliation_cosmatics -> account_reconcile_oca
+	mass_mailing_list_dynamic
+	mass_mailing_list_dynamic -> mass_mailing_partner
+	hr_payroll_community
+	hr_payroll_community -> hr_contract_types
+	hr_payroll_community -> helpdesk_mgmt
+	hr_employee_updation
+	family_tree
+	attendance_advanced
+	attendance_advanced -> hr_payroll_community
+	attendance_advanced -> hr_raw_zte_attendance
+	document_page
+	document_page -> knowledge
+	workflow
+	workflow -> workflow_users
+	helpdesk_mgmt_web
+	helpdesk_mgmt_web -> helpdesk_mgmt
+	hr_custom_contract
+	hr_custom_contract -> hr_payroll_community
+	mass_mailing_company_newsletter
+	mass_mailing_company_newsletter -> mass_mailing_contact_partner
+	mass_mailing_company_newsletter -> mass_mailing_subscription_date
+	document_page_group
+	document_page_group -> document_page
+	web_drop_target
+	helpdesk_mgmt_rating
+	helpdesk_mgmt_rating -> helpdesk_mgmt
+	international_phone_widget
+	hr_extra_attendance_compensation
+	hr_extra_attendance_compensation -> hr_leave_request_aliasing
+	accounting_excel_reports
+	accounting_excel_reports -> accounting_pdf_reports
+	lock_helpdesk_ticket_description_button
+	lock_helpdesk_ticket_description_button -> real_estate_helpdesk
+}

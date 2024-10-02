@@ -1,5 +1,5 @@
 <div dir="rtl">
-    <p>{{temp_start}}&nbsp;</p>
+    <p>{{tem_start}}</p>
     
         <table class="ck-table-resized">
             <colgroup>
@@ -9,242 +9,309 @@
             </colgroup>
             <tbody>
                 <tr>
-                    <td style="text-align:right;vertical-align:bottom;">إستمارة رقم .....…</td>
-                    <td style="vertical-align:top;">
-                        <p style="text-align:center;"><strong><u>طلب حجز وحدة سكنية بمشروع&nbsp;</u></strong>&nbsp;</p>
-                        <p style="line-height:115%;text-align:center;" dir="rtl"><strong><u>BETA Greens new cairo&nbsp;</u></strong></p>
-                        <p style="font-weight:normal;line-height:115%;text-align:center;" dir="rtl"><strong><u>بمشروع المستقبل سيتى</u></strong></p>
+                    <td style="text-align:right;vertical-align:top;width:265.055px;">النظام: التسويق العقاري<br>الشركة: شركة بيتا إيجيبت للتنمية العمرانية<br>السنة: 2024</td>
+                    <td style="text-align:center;width:387.344px;">
+                        <p style="text-align:center;"><strong><u>متابعة الوحدة</u></strong></p>
                     </td>
-                    <td style="padding:2px;"><img class="image_resized padding-small" style="animation-play-state:paused;aspect-ratio:161/118;float:left;transform:scaleX(0.53) scaleY(0.59);transition:none;width:75%;" src="https://dreamhomeseg.com/uploads/developers/Beta-egypt-development.jpg" data-file-name="image.png"></td>
+                    <td style="text-align:right;vertical-align:top;width:228.477px;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:20px;">
+                            <div style="text-align:right;">
+                                <p>التاريخ: {% now 'Africa/Cairo', ' %Y- %m -%d ' %}<br>الوقت: {% now 'Africa/Cairo', '%H:%M:%S' %}</p>
+                            </div>
+                            <div style="text-align:left;">&nbsp;</div>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>
     
-    <p style="font-weight:normal;line-height:115%;text-align:right;" dir="rtl"><strong><u>SL-F-6-03&nbsp;</u></strong></p>
-    <p style="font-weight:normal;line-height:115%;margin-top:0.17in;text-align:right;" dir="rtl"><strong>إنه فى يوم الموافق / /&nbsp;&nbsp;</strong></p>
-    <p style="font-weight:normal;line-height:115%;margin-top:0.17in;text-align:right;" dir="rtl"><strong>السيد المهندس / رئيس مجلس إدارة شركة بيتا إيجيبت للتنمية العمرانية&nbsp;&nbsp;</strong></p>
-    <p style="line-height:115%;margin-left:0.89in;text-align:right;text-indent:0.2in;" dir="rtl"><strong>تحية طيبة وبعد ،،،،،،&nbsp;</strong></p>
-    <p style="font-weight:normal;line-height:115%;text-align:right;" dir="rtl">مقدمه لسيادتكم /</p>
-    <center>
-        
-            
-                <table class="ck-table-resized" dir="rtl" cellspacing="0" cellpadding="9">
-                    <colgroup>
-                        <col style="width:50%;">
-                        <col style="width:50%;">
-                    </colgroup>
-                    <tbody>
-                        <tr valign="top">
-                            <td style="border:1px solid #000000;padding:5px;"><strong>الاسم :- {{contract_partner_ids[0].name}}&nbsp;&nbsp;&nbsp;</strong></td>
-                            <td style="border:1px solid #000000;padding:5px;">
-                                <p style="text-align:justify;"><strong>الجنسية :-&nbsp;{{contract_partner_ids[0].nationality}}&nbsp;</strong></p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000000;padding:5px;vertical-align:top;" colspan="2">
-                                <p style="font-weight:normal;text-align:justify;"><strong>عنوان الإقامه :-&nbsp;{{contract_partner_ids[0].address}}&nbsp;</strong></p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000000;padding:5px;vertical-align:top;" colspan="2">
-                                <p style="font-weight:normal;text-align:justify;"><strong>عنوان المراسله :-&nbsp;{{contract_partner_ids[0].address}}&nbsp;</strong></p>
-                            </td>
-                        </tr>
-                        <tr valign="top">
-                            <td style="border:1px solid #000000;padding:5px;">
-                                <p style="text-align:justify;"><strong>الرقم القومى :-&nbsp;{{contract_partner_ids[0].national_id}}&nbsp;</strong></p>
-                            </td>
-                            <td style="border:1px solid #000000;padding:5px;">
-                                <p style="font-weight:normal;text-align:right;"><strong>التليفون :-&nbsp;{{contract_partner_ids[0].phone}}&nbsp;</strong></p>
-                            </td>
-                        </tr>
-                        <tr valign="top">
-                            <td style="border:1px solid #000000;padding:5px;">
-                                <p style="font-weight:normal;text-align:justify;"><strong>البريد الإلكترونى :-&nbsp;{{contract_partner_ids[0].email}}&nbsp;</strong></p>
-                            </td>
-                            <td style="border:1px solid #000000;padding:5px;">
-                                <p style="font-weight:normal;text-align:justify;"><strong>المهـــنة :-&nbsp;{{contract_partner_ids[0].function}}&nbsp;</strong></p>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            
-        
-    </center>
-    <p style="line-height:115%;margin-left:0.2in;text-align:justify;" dir="rtl"><br>&nbsp;</p>
-    <p style="font-weight:normal;line-height:115%;margin-left:0.2in;text-align:justify;" dir="rtl"><strong>بناء على ما تم الاطلاع عليه من نمــاذج ورسومات هندسية لمشروع " BETA Greens New Cairo" الكائن بمشروع المستقبل سيتى أرجو التفضل على الإرتباط المبدئى لحجز الوحدة رقم (&nbsp;{{unit_id.project_internal_reference}}) عمارة ( <strong>{{unit_id.building_number}}</strong>&nbsp;) بالدور ( <strong>{{unit_id.floor}}</strong>) والكائنة بمشروع " BETA Greens new cairo"&nbsp;&nbsp;</strong></p>
-    <p style="font-weight:normal;line-height:115%;margin-left:0.2in;text-align:justify;" dir="rtl"><strong>والبالغ اجمالي مسطحها ( <strong>{{unit_id.unit_area}}</strong>) متر مربع تحت العجز والزيادة بالإضافه الي حق انتفاع بحديقه ملحقه بالوحده والبالغ مساحتها ( <strong>{{unit_id.unit_area_extension}}</strong>) متر تحت العجز والزياده وأقر بالتزامى بالشروط الاتية : ـ&nbsp;&nbsp;</strong></p>
-    <p style="line-height:115%;margin-left:0.2in;text-align:justify;" dir="rtl"><strong>الثمن الإجمالى للوحـــدة بخلاف دفعـــة الصيانة هو مبلغ # {{total_amount}}&nbsp;# جنية ( فقط ....................................................... جنيها مصريا لاغير ) يتم سدادها على النحو التالى : ـ&nbsp;&nbsp;</strong></p>
-    <center>
-        
-            
-                <table class="ck-table-resized" style="border:1px solid hsl(0, 0%, 0%);" cellspacing="0" cellpadding="9">
-                    <colgroup>
-                        <col style="width:25%;">
-                        <col style="width:25%;">
-                        <col style="width:25%;">
-                        <col style="width:25%;">
-                    </colgroup>
-                    <tbody>
-                        <tr>
-                            <td style="background-color:#bfbfbf;border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;" dir="rtl"><strong>بيان الدفعة&nbsp;</strong></p>
-                            </td>
-                            <td style="background-color:#bfbfbf;border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><strong>عدد الدفعات&nbsp;</strong></p>
-                            </td>
-                            <td style="background-color:#bfbfbf;border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;" dir="rtl"><strong>قيمة الدفعة&nbsp;</strong></p>
-                            </td>
-                            <td style="background-color:#bfbfbf;border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;" dir="rtl"><strong>تاريخ الاستحقاق&nbsp;</strong></p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="background-color:#bfbfbf;border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><strong>اجمالى سعر الوحدة&nbsp;</strong></p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;">&nbsp;&nbsp;<br>&nbsp;</p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p>&nbsp;</p>
-                                <p>{{total_amount}}&nbsp;<br>&nbsp;</p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><br>&nbsp;</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="background-color:#bfbfbf;border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="font-weight:normal;text-align:center;"><strong>عربون حجز&nbsp;&nbsp;</strong></p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">1&nbsp;<br>&nbsp;</td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;"><br>{{reservation_fee}}&nbsp;</td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><br>{{create_date.date()}}&nbsp;</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="background-color:#bfbfbf;border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><strong>دفعة تعاقد&nbsp;</strong></p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><br>1&nbsp;&nbsp;<br>&nbsp;</p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><br>&nbsp;{{down_payment_id.amount}}</p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><br>{{down_payment_id.installment_date}}&nbsp;</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="background-color:#bfbfbf;border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><strong>دفعة&nbsp;&nbsp;</strong></p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;">{{ bulk_payment_ids | length }}&nbsp;<br>&nbsp;</p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="margin-bottom:0px;text-align:center;"><br>{% for payment in bulk_payment_ids %}{{ payment.amount }}</p>
-                                <p style="text-align:center;">{%- if loop.length &gt; 1 and not loop.last -%},{%- endif -%}{% endfor %}&nbsp;</p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="margin-bottom:0px;text-align:center;"><br>&nbsp;{% for payment in bulk_payment_ids %}{{ payment.installment_date }}</p>
-                                <p style="text-align:center;">{%- if loop.length &gt; 1 and not loop.last -%},{%- endif -%}{% endfor %}&nbsp;<br>&nbsp;</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="background-color:#bfbfbf;border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="font-weight:normal;text-align:center;"><strong>اقساط ربع سنوى&nbsp;</strong></p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><br>{{number_of_equal_payments}}&nbsp;</p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><br>{{equal_payment_ids[0].amount}}&nbsp;</p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><br>&nbsp;تسدد من&nbsp; {{equal_payment_ids[0].installment_date}} الي {{equal_payment_ids[-1].installment_date}}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="background-color:#bfbfbf;border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><strong>وديعة صيانة&nbsp;</strong></p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><br>&nbsp;</p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><br>{{unit_id.maintenance_fees
+    
+        <table class="ck-table-resized">
+            <colgroup>
+                <col style="width:37.14%;">
+                <col style="width:28.72%;">
+                <col style="width:34.14%;">
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td style="text-align:right;vertical-align:top;">العميل: {{unit_owner_id.name}}<br>البرج: {{building_number}}<br>رقم الوحدة: {{unit_number}}<br>تاريخ التعاقد: {{date_contracted}}<br>تاريخ استلام الوحدة :{{date_delivered}}<br>مندوب البيع: {{salesperson.name}}</td>
+                    <td style="text-align:center;width:387.344px;">&nbsp;</td>
+                    <td style="text-align:right;vertical-align:top;width:228.477px;">المنطقة: 4<br>قطعة: 4<br>تاريخ استلام فعلي</td>
+                </tr>
+            </tbody>
+        </table>
+    <br>
+    <br>
+    <br>
+    
+        <table class="ck-table-resized" style="border-collapse:collapse;margin:auto;">
+            <colgroup>
+                <col style="width:23.23%;">
+                <col style="width:15.46%;">
+                <col style="width:22.98%;">
+                <col style="width:38.33%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:1px;text-align:center;">بيان</th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:1px;text-align:center;">المبلغ المسدد</th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:1px;text-align:center;">تاريخ السداد</th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:1px;text-align:center;">رقم الشيك</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border:1px solid hsl(0, 0%, 0%);padding:1px;text-align:center;">قيمة الوحدة</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;" colspan="3"><strong>{{sold_unit_price}}</strong></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;" colspan="2">المسدد</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">&nbsp;</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid hsl(0, 0%, 0%);padding:1px;text-align:center;">دفعة حجز</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);padding:1px;text-align:center;">{{booking_request_payment}}</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">{{date_booked}}</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);padding:1px;text-align:center;">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">دفعة تعاقد</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">{{initial_investment}}</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">&nbsp;</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">اجمالي المسدد</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">{{booking_request_payment + initial_investment}}</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">&nbsp;</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">اوراق قبض</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">{{payment_cheques_sum}}</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">&nbsp;</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">بنود اضافة</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">{{maintenance_cheques_sum}}</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">&nbsp;</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">اجمالي</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">{{booking_request_payment + initial_investment + payment_cheques_sum +maintenance_cheques_sum }}</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">&nbsp;</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">&nbsp;</td>
+                </tr>
+            </tbody>
+        </table>
+    
+    <p></p><div style="page-break-after:always"></div>
+    
+        <table class="ck-table-resized">
+            <colgroup>
+                <col style="width:30.09%;">
+                <col style="width:44.52%;">
+                <col style="width:25.39%;">
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td style="text-align:right;vertical-align:top;width:265.055px;">النظام: التسويق العقاري<br>الشركة: شركة بيتا إيجيبت للتنمية العمرانية<br>السنة: 2024</td>
+                    <td style="text-align:center;width:387.344px;">
+                        <p style="text-align:center;"><strong><u>متابعة الوحدة</u></strong></p>
+                    </td>
+                    <td style="text-align:right;vertical-align:top;width:228.477px;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:20px;">
+                            <div style="text-align:right;">
+                                <p>التاريخ: {% now 'Africa/Cairo', ' %Y- %m -%d ' %}<br>الوقت: {% now 'Africa/Cairo', '%H:%M:%S' %}</p>
+                            </div>
+                            <div style="text-align:left;">&nbsp;</div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    
+    
+        <table class="ck-table-resized">
+            <colgroup>
+                <col style="width:37.14%;">
+                <col style="width:28.72%;">
+                <col style="width:34.14%;">
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td style="text-align:right;vertical-align:top;">العميل: {{unit_owner_id.name}}<br>البرج: {{building_number}}<br>رقم الوحدة: {{unit_number}}<br>تاريخ التعاقد: {{date_contracted}}<br>تاريخ استلام الوحدة :{{date_delivered}}<br>مندوب البيع: {{salesperson.name}}</td>
+                    <td style="text-align:center;width:387.344px;">&nbsp;</td>
+                    <td style="text-align:right;vertical-align:top;width:228.477px;">المنطقة: 4<br>قطعة: 4<br>تاريخ استلام فعلي</td>
+                </tr>
+            </tbody>
+        </table>
+    
+    <br>
 
-}}</p>
-                            </td>
-                            <td style="border:1px inset hsl(0, 0%, 0%);padding:2px;text-align:center;">
-                                <p style="text-align:center;"><br>&nbsp;</p>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            
-        
-    </center>
-    <p>&nbsp;</p>
-    <ol>
-        <li><strong>تاريخ استلام الوحده / /&nbsp;&nbsp;</strong></li>
-        <li><strong>يحق للعميل ( نادى أو باكية جراج )&nbsp;</strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<strong> &nbsp;</strong></li>
-        <li><strong>أقر بأن موقفى الإئتمانى قوى وسليم وفى حالة ورود تقرير الإستعلام الإئتمانى بأنه غير مرضى تعتبر الاستمارة كأن لم تكن ويطبق الخصم الوارد فى البند الخامس .&nbsp;</strong></li>
-        <li><strong>أتعهد بسدادى ال أ قساط والدفعات التى حل أجلها والتوقيع على عقد البيع وتحرير شيكات الأقساط أعلاه فى موعد لايتجاوز / / م&nbsp;</strong></li>
-        <li><strong>فــى حالــة الغائى للحجز أو إمتنــاعى عن توقيع عقد البيع أو تحرير شيكات الأقساط أو سداد أى قسط من الأقساط في الموعد المحدد بالبند السابق يعتبر ذلك عدولا نهائيا عن الحجز وتعتبر هذه الاستمارة كأن لم تكن دون حاجة الى تنبيه أو إنذار أو إستصدار حكم قضائى بذلك ويحق للشركة بيع الوحدة للغير دون اعتداد بهذا الحجز ويحق للشركة خصم مبلغ وقدره 25000 جنيه ( فقط وقدره خمسة وعشرون ألف جنيه مصرى لا غير ) طبقا لاحكام العربون الوارده بالقانون المدنى على أن يتم رد باقى المبالغ السابق سدادها بعد هذا الخصم بعد 30 يوما من تاريخ إلغاء الحجز وبذات الطريقة التى تم سدادها بها .&nbsp;</strong></li>
-        <li><strong>أقر بأن عنوان مراسلاتى داخل مصر هو العنوان المختار الذى يصح عليه قانوناً إخطارى بأية إخطارات أو إعلانات وأتعهد بإخطــار الشـركة رسمياً فى حالة تغييره وإلا تصح جميع المراسلات عليه وبشرط ان يكون العنوان الجديد داخل مصر .&nbsp;</strong></li>
-        <li><strong>يحق للعميل طلب التحويل إلى وحدة أخرى بأى مشروع من مشروعات الشركة طبقا للوائح الشركة .&nbsp;</strong></li>
-        <li><strong>للاتصال او الشكوى برجاء التواصل على </strong><a href="mailto:cs@betaegypt.com"><strong><u>cs@betaegypt.com </u></strong></a><strong>.&nbsp;</strong>&nbsp;</li>
-    </ol>
     
-        
-            <table class="ck-table-resized" dir="rtl" cellspacing="1" cellpadding="9">
-                <colgroup>
-                    <col style="width:33.38%;">
-                    <col style="width:40.28%;">
-                    <col style="width:26.34%;">
-                </colgroup>
-                <tbody>
-                    <tr style="height:87.2px;" valign="top">
-                        <td style="border-bottom-style:none;border-left-style:none;border-right-style:none;border-top:4.5pt double #000000;padding:5px;width:264.05px;">
-                            <p style="font-weight:normal;text-align:right;">&nbsp;</p>
-                        </td>
-                        <td style="border-bottom-style:none;border-left-style:none;border-right-style:none;border-top:4.5pt double #000000;padding:5px;text-align:center;width:318.617px;">
-                            <p style="text-align:right;">&nbsp;</p>
-                            <p style="text-align:right;">مقدم الطلب</p>
-                        </td>
-                        <td style="border-bottom-style:none;border-left-style:none;border-right-style:none;border-top:4.5pt double #000000;padding:0in;width:208.333px;">
-                            <p style="font-weight:normal;text-align:right;"><br>&nbsp;</p>
-                        </td>
-                    </tr>
-                    <tr style="height:78.7167px;" valign="top">
-                        <td style="border:1px inset #000000;padding:5px;text-align:center;width:264.05px;">
-                            <p style="font-weight:normal;text-align:right;">الاســــم :</p>
-                        </td>
-                        <td style="border:1px inset #000000;padding:5px;text-align:center;width:526.95px;" colspan="2">
-                            <p style="font-weight:normal;text-align:right;">&nbsp;</p>
-                            <p style="text-align:right;"><br>&nbsp;</p>
-                        </td>
-                    </tr>
-                    <tr style="height:126.8px;" valign="top">
-                        <td style="border:1px inset #000000;padding:5px;text-align:center;width:264.05px;">
-                            <p style="font-weight:normal;text-align:right;">التوقيــع :</p>
-                        </td>
-                        <td style="border:1px inset #000000;padding:5px;text-align:center;width:526.95px;" colspan="2">
-                            <p style="font-weight:normal;text-align:right;"><br>&nbsp;</p>
-                            <p style="text-align:right;"><br>&nbsp;</p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        
+        <table class="ck-table-resized" style="border-collapse:collapse;margin:auto;">
+            <colgroup>
+                <col style="width:8.16%;">
+                <col style="width:15.07%;">
+                <col style="width:15.46%;">
+                <col style="width:22.98%;">
+                <col style="width:17.57%;">
+                <col style="width:20.76%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:1px;text-align:center;">
+                        <p style="text-align:center;">بيان</p>
+                    </th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:1px;text-align:center;">
+                        <p style="text-align:center;">تاريخ الاستحقاق</p>
+                    </th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:1px;text-align:center;">
+                        <p style="text-align:center;">المبلغ المستحق</p>
+                    </th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:1px;text-align:center;">
+                        <p style="text-align:center;">تاريخ السداد</p>
+                    </th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:1px;text-align:center;">
+                        <p style="text-align:center;">رقم الشيك</p>
+                    </th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:1px;text-align:center;">
+                        <p style="text-align:center;">حالة الدفعة</p>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border:1px solid black;padding:4px;text-align:center;">
+                        <p style="text-align:center;">قيمة الوحدة</p>
+                    </td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;" colspan="5"><strong>{{sold_unit_price}}</strong></td>
+                </tr>
+              {% for cheque in payment_cheques %}  <tr>
+                    <td style="border:1px solid black;padding:1px;text-align:center;">
+                        <p style="text-align:center;">قسط</p>
+                    </td>
+                    <td style="border:1px solid black;padding:1px;text-align:center;">
+                        <p style="text-align:center;">{{cheque.cheque_date}}</p>
+                    </td>
+                    <td style="border:1px solid black;padding:1px;text-align:center;">
+                        <p style="text-align:center;">{{cheque.amount}}</p>
+                    </td>
+                    <td style="border:1px solid black;padding:1px;text-align:center;">
+                        <p style="text-align:center;">{{cheque.cashed_date_com or ''}}</p>
+                    </td>
+                    <td style="border:1px solid black;padding:1px;text-align:center;">
+                        <p style="text-align:center;">{{cheque.cheque_no}}</p>
+                    </td>
+                    <td style="border:1px solid black;padding:1px;text-align:center;">
+                        <p style="text-align:center;">{% if cheque.state == 'done' %}محصلة{% else %}</p>
+                        <p>{% endif %}</p>
+                    </td>
+                </tr>{% endfor %} 
+            </tbody>
+        </table>
     
-    <p style="font-weight:normal;line-height:115%;margin-left:0.1in;text-align:right;text-indent:0.5in;" dir="rtl"><strong>مسئول المبيعات&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</strong></strong>مدير المبيعات<strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</strong></strong></strong>مدير الأوبريشن<strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>&nbsp; &nbsp; &nbsp; </strong></strong></strong>رئيس إدارة المبيعات&nbsp;</strong></p>
-    <p style="font-weight:normal;line-height:115%;margin-left:0.1in;text-align:right;text-indent:0.2in;" dir="rtl">&nbsp;</p>
-    <p>{{temp_end}}</p>
+  <br>
+    
+        <table style="border-collapse:collapse;margin:auto;">
+            <thead>
+                <tr>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid hsl(0, 0%, 0%);padding:4px;text-align:center;">
+                        <p style="text-align:center;">المتاخرات</p>
+                    </th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid hsl(0, 0%, 0%);padding:4px;text-align:center;">
+                        <p style="text-align:center;">النسبة المئوية</p>
+                    </th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid hsl(0, 0%, 0%);padding:4px;text-align:center;">
+                        <p style="text-align:center;">المبلغ</p>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border:1px solid hsl(0, 0%, 0%);padding:4px;text-align:center;">
+                        <p style="text-align:center;">اجمالي المسدد</p>
+                    </td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);padding:4px;text-align:center;">
+                        <p style="text-align:center;">{{(100 *done_payment_cheques_sum / payment_cheques_sum) | round(2)}}%</p>
+                    </td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);padding:4px;text-align:center;">
+                        <p style="text-align:center;">{{ done_payment_cheques_sum}}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">اجمالي المتبقي</td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">
+                        <p style="text-align:center;">{{(100-(100 *done_payment_cheques_sum / payment_cheques_sum) | round(2))}}%</p>
+                    </td>
+                    <td style="border:1px solid hsl(0, 0%, 0%);text-align:center;">
+                        <p style="text-align:center;">{{ payment_cheques_sum - done_payment_cheques_sum}}</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    
+<br>
+    
+        <table class="ck-table-resized" style="border-collapse:collapse;margin:auto;">
+            <colgroup>
+                <col style="width:8.16%;">
+                <col style="width:15.07%;">
+                <col style="width:15.46%;">
+                <col style="width:22.98%;">
+                <col style="width:17.57%;">
+                <col style="width:20.76%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:8px;text-align:center;">
+                        <p style="text-align:center;">بيان</p>
+                    </th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:4px;text-align:center;">
+                        <p style="text-align:center;">تاريخ الاستحقاق</p>
+                    </th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:4px;text-align:center;">
+                        <p style="text-align:center;">المبلغ المستحق</p>
+                    </th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:4px;text-align:center;">
+                        <p style="text-align:center;">تاريخ السداد</p>
+                    </th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:4px;text-align:center;">
+                        <p style="text-align:center;">رقم الشيك</p>
+                    </th>
+                    <th style="background-color:hsl(0, 0%, 60%);border:1px solid black;padding:4px;text-align:center;">
+                        <p style="text-align:center;">حالة الدفعة</p>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for cheque in maintenance_cheques %}   <tr>
+                    <td style="border:1px solid black;padding:4px;text-align:center;">
+                        <p style="text-align:center;">صيانة</p>
+                    </td>
+                    <td style="border:1px solid black;padding:4px;text-align:center;">
+                        <p style="text-align:center;">{{cheque.cheque_date}}</p>
+                    </td>
+                    <td style="border:1px solid black;padding:4px;text-align:center;">
+                        <p style="text-align:center;">{{cheque.amount}}</p>
+                    </td>
+                    <td style="border:1px solid black;padding:4px;text-align:center;">
+                        <p style="text-align:center;">{{cheque.cashed_date_com or ''}}</p>
+                    </td>
+                    <td style="border:1px solid black;padding:4px;text-align:center;">
+                        <p style="text-align:center;">{{cheque.cheque_no}}</p>
+                    </td>
+                    <td style="border:1px solid black;padding:4px;text-align:center;">
+                        <p style="text-align:center;">{% if cheque.state == 'done' %}محصلة{% else %}</p>
+                        <p>{% endif %}</p>
+                    </td>
+                </tr>{% endfor %}
+            </tbody>
+        </table>
+    
+    <p>{{tem_end}}</p>
 </div>
