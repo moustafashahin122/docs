@@ -3549,7 +3549,12 @@ http://localhost:8015/report/pdf/assets_pdf_report.asset_report_temp/324
         <field name="binding_model_id" ref="om_account_asset.model_account_asset_asset" />
         <field name="binding_type">report</field>
     </record>
-****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** order_id ************************************
+product_template  in product_id product_tmpl_id
+
+
+        line=self.env['sale.order.line'].create({'order_id':self._origin.id,'product_template_id':self.unit_id.id,'price_unit':self.expected_revenue, 'product_uom_qty': 1.0,'name':self.unit_id.name,'product_id':self.unit_id.product_variant_id.id})
+
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
