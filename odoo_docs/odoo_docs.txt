@@ -3555,7 +3555,44 @@ product_template  in product_id product_tmpl_id
 
         line=self.env['sale.order.line'].create({'order_id':self._origin.id,'product_template_id':self.unit_id.id,'price_unit':self.expected_revenue, 'product_uom_qty': 1.0,'name':self.unit_id.name,'product_id':self.unit_id.product_variant_id.id})
 
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** xlsx report *********************************************
+install report_xlsx module 
+
+from odoo import models
+
+class PartnerXlsx(models.AbstractModel):
+    _name = 'report.bank_sheet_xlsx_report.report_name'
+    _inherit = 'report.report_xlsx.abstract'
+
+    def generate_xlsx_report(self, workbook, data, partners):
+        for obj in partners:
+            report_name = obj.name
+            # One sheet by partner
+            sheet = workbook.add_worksheet(report_name[:31])
+            bold = workbook.add_format({'bold': True})
+            sheet.write(0, 0, obj.name, bold)
+
+
+
+
+
+
+
+
+    <record id="action_report_partner_xlsx" model="ir.actions.report">
+        <field name="name">Print to XLSX</field>
+        <field name="model">res.partner</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">bank_sheet_xlsx_report.report_name</field>
+        <field name="report_file">bank_sheet_xlsx_report.report_file</field>
+        <field name="binding_model_id" ref="base.model_res_partner" />
+        <field name="binding_type">report</field>
+        <field name="attachment_use" eval="False" />
+    </record>
+
+
+
+********************* ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
