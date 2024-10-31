@@ -3184,175 +3184,6 @@ class PaymentPlan(models.AbstractModel):
                                 <div class="d-flex flex-column flex-md-row gap-3 flex-grow-1">
 ****************************** ++++++++++++++++++++++++++++++++ ******************************************
 
-{{tem_start}}
-
-إستمارة رقم .........
-
-طلب حجز وحدة سكنية بمشروع 
-
-BETA Greens new cairo 
-
-بمشروع المستقبل سيتى 
-
-الاقساط
-
-SL-F-6-03 
-
-إنه فى يوم الموافق {{create_date}}
-
-السيد المهندس/ رئيس مجلس إدارة شركة بيتا إيجيبت للتنمية العمرانية 
-
-تحية طيبة وبعد ،،،،،،
-
-مقدمه لسيادتكم /
-
-الاسم :- {{contract_partner_ids[0].name}}
-	
-
-الجنسية :- {{contract_partner_ids[0].nationality}}
-
-عنوان الإقامه :- {{contract_partner_ids[0].address}}
-
-عنوان المراسله :- {{contract_partner_ids[0].address}}
-
-الرقم القومى :- {{contract_partner_ids[0].national_id}}
-	
-
-التليفون:- {{contract_partner_ids[0].phone}}
-
-البريد الإلكترونى:- {{contract_partner_ids[0].email}}
-	
-
-المهـــنة:- {{contract_partner_ids[0].function}}
-
-بناء على ما تم الاطلاع عليه من نمــاذج ورسومات هندسية لمشروع " BETA Greens New Cairo" الكائن بمشروع المستقبل سيتى أرجو التفضل على الإرتباط المبدئى لحجز الوحدة رقم ({{unit_id.project_internal_reference}} ) عمارة ( {{unit_id.building_number}} )بالدور ( {{unit_id.floor}}) والكائنة بمشروع " BETA Greens new cairo" 
-
-والبالغ اجمالي مسطحها ({{unit_id.unit_area}}) متر مربع تحت العجز والزيادة بالإضافه الي حق انتفاع بحديقه ملحقه بالوحده والبالغ مساحتها ( {{unit_id.unit_area_extension}}) متر تحت العجز والزياده وأقر بالتزامى بالشروط الاتية :ـ 
-
-الثمن الإجمالى للوحـــدة بخلاف دفعـــة الصيانة هو مبلغ # {{expected_revenue}} # جنية ( فقط ....................................................... جنيها مصريا لاغير ) يتم سدادها على النحو التالى :ـ 
-
-
-
- 
-
-بيان الدفعة
-	
-
-عدد الدفعات
-	
-
-قيمة  الدفعات
-	
-
-تاريخ الاستحقاق 
-
-اجمالى سعر الوحدة
-	  	
-
- {{total_amount}}
-	
-
-عربون حجز 
-	
-
-
-  1
-	
-
-
-{{reservation_fee}} 
-	{{create_date.date()}} 
-
-دفعة تعاقد
-	1
-	{{down_payment_id.amount}}
-	{{down_payment_id.installment_date}}
-
-دفعات 
-	{{ bulk_payment_ids | length }}
-   	{% for payment in bulk_payment_ids %}{{ payment.amount }}
-{%- if loop.length > 1 and not loop.last -%},{%- endif -%}{% endfor %} 	 {% for payment in bulk_payment_ids %}{{ payment.installment_date }}
-{%- if loop.length > 1 and not loop.last -%},{%- endif -%}{% endfor %}
-
-اقساط 
-	
-
-{{number_of_equal_payments}}
-	{{equal_payment_ids[0].amount}}
-	تسدد من  {{equal_payment_ids[0].installment_date}} الي {{equal_payment_ids[-1].installment_date}}
-
-وديعة صيانة
-	
-
-
- 
-	
-
-
- 
-	 
- 
-
-
-    تاريخ استلام الوحده / /  
-    يحق للعميل ( نادى أو باكية جراج )    
-    أقر بأن موقفى الإئتمانى قوى وسليم وفى حالة ورود تقرير الإستعلام الإئتمانى بأنه غير مرضى تعتبر الاستمارة كأن لم تكن ويطبق الخصم الوارد فى البند الخامس . 
-    أتعهد بسدادى الأقساط والدفعات التى حل أجلها والتوقيع على عقد البيع وتحرير شيكات الأقساط أعلاهفى موعد لايتجاوز / / م 
-    فــى حالــة الغائى للحجز أو إمتنــاعى عن توقيع عقد البيع أو تحرير شيكات الأقساط أو سداد أى قسط من الأقساط في الموعد المحدد بالبند السابق يعتبر ذلك عدولا نهائيا عن الحجز وتعتبر هذه الاستمارة كأن لم تكن دون حاجة الى تنبيه أو إنذار أو إستصدار حكم قضائى بذلك ويحق للشركة بيع الوحدة للغير دون اعتداد بهذا الحجز ويحق للشركة خصم مبلغ وقدره 25000 جنيه (فقط وقدره خمسة وعشرون ألف جنيه مصرى لا غير ) طبقا لاحكام العربون الوارده بالقانون المدنىعلى أن يتم رد باقى المبالغ السابق سدادها بعد هذا الخصم بعد 30 يوما من تاريخ إلغاء الحجز وبذات الطريقة التى تم سدادها بها . 
-    أقر بأن عنوان مراسلاتى داخل مصر هو العنوان المختار الذى يصح عليه قانوناً إخطارى بأية إخطارات أو إعلانات وأتعهد بإخطــار الشـركة رسمياً فى حالة تغييره وإلا تصح جميع المراسلات عليه وبشرط ان يكون العنوان الجديد داخل مصر . v
-    يحق للعميل طلب التحويل إلى وحدة أخرى بأى مشروع من مشروعات الشركة طبقا للوائح الشركة. gf
-    للاتصال او الشكوى برجاء التواصل على ﻿﻿cs@betaegypt.com﻿﻿.  
-
-     
-    	
-
-     
-
-    مقدم الطلب 
-    	
-
-
-     
-
-    الاســــم :
-    	
-
-    .............................................
-    	
-
-
-     
-
-    التوقيــع :
-    	
-
-
-     
-    	
-
-
-     
-
-مسئول المبيعات مدير االمبيعات مدير الأوبريشن رئيس إدارة المبيعات
-
- 
-
- 
-{{tem_end}}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ************************ kanban view in form view ************************************
 
 
@@ -3592,9 +3423,57 @@ class PartnerXlsx(models.AbstractModel):
 
 
 
-********************* ++++++++++++++++++++++++++++++++ ************************************
+********************* external dependancy ************************************
+
+'external_dependencies': {
+        'python': ['pypeg2']
+    }
+
+
+
+
+
+
+
+
+
+****************************** override _name_search ************************************
+  @api.model
+    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+        args = args or []
+        if name:
+            args = ['|', ('name', operator, name), ('registration_number', operator, name)] + args
+        return super(HrEmployee, self)._name_search(name, args=args, operator=operator, limit=limit, name_get_uid=name_get_uid)
+
+****************************** automate xlsx report with report_xlsx ************************************
+
+
+from odoo import models
+
+class PartnerXlsx(models.AbstractModel):
+    _name = 'report.bank_sheet_xlsx_report.bank_sheet_xlsx'
+    _inherit = 'report.report_xlsx.abstract'
+
+    def generate_xlsx_report(self, workbook, data, entries):
+        headers_dict={'bank_name':'Bank Name','account_number':'Account Number','employee_name':'Employee Name','identification_id':'National ID Number','net_salary':'Salary','basic_salary':'Basic Salary','housing_allowance':'Housing Allowance','transportation_allowance':'Transportation Allowance','other_earnings':'Other Earnings','deductions':'Deduction','employee_remarks':'Employee Remarks','department_name':'Employee Department'}
+        report_name = "Bank Sheet"
+        sheet = workbook.add_worksheet(report_name[:31])
+        bold = workbook.add_format({'bold': True})
+        for index ,header in enumerate(headers_dict.values()):
+            sheet.write(0, index, header, bold)
+        all_fields= entries.fields_get()
+        for index, entry in enumerate(entries): 
+            for header_index ,header in enumerate(headers_dict.keys()):
+                if header in all_fields:
+                    sheet.write(2+index,header_index,entry[header]) 
+                else:
+                    sheet.write(2+index,header_index,'N/P') 
+
+
+
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************

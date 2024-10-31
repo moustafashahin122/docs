@@ -8,13 +8,14 @@
 This module adds the functionality of requesting a contract change
     """,
 
-      'author': "Metrics",
-    'website': "https://www.metrics.com.eg/",
+      'author': "Shahin",
+    'website': "Shahin",
     'category': 'Contract Management',
     'version': '17.0.1.0.0',
     'installable': True,
     'application': False,
-    
+    'license': 'Other proprietary',
+
     
     
     # any module necessary for this one to work correctly
