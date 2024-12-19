@@ -1095,6 +1095,51 @@ print(f"The day of the week for {date} is {day_of_week}.")
 
 
 ********************************* ++++++++++++++++++++++++++++++++ ************************************
+[options]
+addons_path = /opt/odoo17/addons,/opt/odoo17/enterprise_addons,/opt/odoo17/mybroker_addons
+admin_passwd = admin
+csv_internal_sep = ,
+data_dir = /home/shahin/.local/share/Odoo
+db_host = False
+db_name = 
+db_password = False
+db_port = False
+db_sslmode = prefer
+db_template = template0
+db_user = False
+dbfilter = 
+demo = {}
+email_from = False
+from_filter = False
+http_port = 8017
+limit_memory_hard = 26843545600000
+limit_memory_soft = 21474836480000
+limit_request = 655360000
+limit_time_cpu = 600000
+limit_time_real = 120000
+limit_time_real_cron = -1
+proxy_mode = False
+websocket_keep_alive_timeout = 360000
+websocket_rate_limit_burst = 10
+websocket_rate_limit_delay = 0.2
+without_demo = False
+workers = 0
+x_sendfile = False
+
+
+
+
+********************************* ++++++++++++++++++++++++++++++++ ************************************
+
+********************************* ++++++++++++++++++++++++++++++++ ************************************
+
+********************************* ++++++++++++++++++++++++++++++++ ************************************
+
+********************************* ++++++++++++++++++++++++++++++++ ************************************
+
+********************************* ++++++++++++++++++++++++++++++++ ************************************
+
+********************************* ++++++++++++++++++++++++++++++++ ************************************
 
 
 
