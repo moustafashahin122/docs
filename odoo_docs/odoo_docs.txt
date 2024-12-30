@@ -3483,12 +3483,15 @@ class PartnerXlsx(models.AbstractModel):
 
 
 ****************************** override _name_search ************************************
-  @api.model
+    @api.model
     def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
         args = args or []
         if name:
-            args = ['|', ('name', operator, name), ('registration_number', operator, name)] + args
-        return super(HrEmployee, self)._name_search(name, args=args, operator=operator, limit=limit, name_get_uid=name_get_uid)
+            args = args + ['|', ('name', operator, name), ('salesman_ref', operator, name)] 
+        return super(HrEmployeePublic, self)._search(args, limit=limit, access_rights_uid=name_get_uid)
+    
+
+
 
 ****************************** automate xlsx report with report_xlsx ************************************
 
