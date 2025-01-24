@@ -1,6 +1,13 @@
 #!/bin/bash
 
 
+# Check if there are staged or unstaged changes in the Git repository
+if [[ -n $(git status --porcelain) ]]; then
+    echo "You have staged or unstaged changes in the repository. Please commit or stash them before proceeding."
+    exit 1
+fi
+
+
 if [ "$#" -ne 3 ]; then
     echo -e "\nUsage: $0 <existing_db> <existing_branch> <dev_branch>"
     exit 1
