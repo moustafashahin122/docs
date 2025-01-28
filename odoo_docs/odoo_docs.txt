@@ -6,7 +6,12 @@ odoo_analyse --path /opt/odoo17/odoo17/epm-betaegypt/metrics_enterprise/ --show-
 odoo_analyse -c /etc/odoo_17_beta.conf --show-dependency --skip-all
 
 
-****************************************************************************************************************************************
+*******************************************************************
+test report
+'["/report/pdf/multi_product_select.tb_invoice/554704","qweb-pdf"]'
+
+
+*********************************************************************
 
 disable cors
 
@@ -3521,7 +3526,20 @@ class PartnerXlsx(models.AbstractModel):
 
 
 
-****************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** sql Query ************************************
+
+            update_query=""" update stock_valuation_layer 
+                            set create_date = %(rec_date_done)s
+                            where stock_move_id in %(stock_move_ids)s
+"""
+            self.env.cr.execute(update_query,{'rec_date_done': rec_date_done,'stock_move_ids': tuple(rec.move_ids.ids)})
+            # self.env.cr.execute("""
+            #     select * from stock_valuation_layer where stock_move_id in %(stock_move_ids)s
+            # """,{'stock_move_ids': tuple(rec.move_ids.ids)})
+            # res = self.env.cr.fetchall()
+            self.env.cr.commit()
+
+            self._invalidate_cache()
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
