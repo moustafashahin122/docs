@@ -1,0 +1,30 @@
+show compiled conf
+docker-compose -f docker-compose-stage.yml config
+
+logs
+docker logs -f odoo
+
+# Check if Docker is installed
+docker --version
+
+# Pull an image (e.g., Ubuntu)
+docker pull ubuntu
+
+# Run a container (interactive mode)
+docker run -it ubuntu bash
+
+# List running containers
+docker ps
+
+# List all containers (running + stopped)
+docker ps -a
+
+# Stop a running container
+docker stop <container_id>
+
+# Remove a container
+docker rm <container_id>
+
+# Remove an image
+docker rmi <image_id>
+

@@ -8,7 +8,7 @@
 This module adds the functionality of requesting a contract change
     """,
 
-      'author': "Shahin",
+    'author': "Shahin",
     'website': "Shahin",
     'category': 'Contract Management',
     'version': '17.0.1.0.0',
