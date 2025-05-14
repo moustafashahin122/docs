@@ -9,14 +9,13 @@ Usage:
 The script will interactively prompt for the addons directory if not provided.
 
 Example:
-    python module_dependency_graph.py --output dependency_graph.pdf
+    python module_dependency_graph.py --output dependency_graph
 """
 
 import os
 import sys
 import ast
 import argparse
-import json
 import subprocess
 from pathlib import Path
 import networkx as nx
@@ -69,54 +68,13 @@ def create_dependency_graph(manifest_files):
     return G
 
 
-def run_eslintcc(directory, output_file=None):
-    """Run eslintcc to get complexity metrics for JavaScript files."""
-    try:
-        command = ["npx", "eslintcc", "--format=json", directory]
-        result = subprocess.run(command, capture_output=True, text=True)
-        
-        if result.returncode != 0:
-            print(f"Warning: eslintcc failed with error: {result.stderr}")
-            return {}
-        
-        metrics = json.loads(result.stdout)
-        
-        if output_file:
-            with open(output_file, 'w', encoding='utf-8') as f:
-                json.dump(metrics, f, indent=2)
-                
-        return metrics
-    except Exception as e:
-        print(f"Error running eslintcc: {e}")
-        return {}
-
-
-def generate_complexity_map(metrics):
-    """Generate a map of module names to complexity scores."""
-    complexity_map = {}
-    
-    for item in metrics:
-        file_path = item.get('file', '')
-        complexity = item.get('complexity', {}).get('average', 0)
-        
-        # Extract module name from file path
-        parts = file_path.split(os.sep)
-        for i, part in enumerate(parts):
-            if i > 0 and parts[i-1] == 'addons':
-                complexity_map[part] = complexity_map.get(part, 0) + complexity
-                break
-    
-    return complexity_map
-
-
-def visualize_with_graphviz(G, output_file=None, output_dir=None, complexity_map=None, format_type='svg'):
+def visualize_with_graphviz(G, output_file=None, output_dir=None, format_type='svg'):
     """Visualize the dependency graph using Graphviz.
     
     Args:
         G: NetworkX graph object
         output_file: Name of the output file without extension
         output_dir: Directory to save the output files
-        complexity_map: Map of module names to complexity scores
         format_type: Output format (default: svg)
         
     Returns:
@@ -145,14 +103,8 @@ def visualize_with_graphviz(G, output_file=None, output_dir=None, complexity_map
         deps_normalized = dependency_count[node] / max_deps
         color = f"#{int(80 + (175 * (1 - deps_normalized))):02x}{int(150 + (105 * (1 - deps_normalized))):02x}ff"
         
-        # Node size based on complexity
-        fontsize = '12'
-        if complexity_map and node in complexity_map:
-            complexity = complexity_map[node]
-            fontsize = str(12 + min(complexity // 10, 12))  # Cap size increase
-        
         # Add node with attributes
-        dot.node(node, label, style='filled', fillcolor=color, fontsize=fontsize)
+        dot.node(node, label, style='filled', fillcolor=color, fontsize='12')
     
     # Add edges
     for edge in G.edges():
@@ -276,8 +228,6 @@ def main():
     parser.add_argument('--output-dir', '-d', help='Directory to save output files (defaults to addons directory)')
     parser.add_argument('--format', '-f', choices=['svg', 'pdf', 'png'], default='svg', 
                         help='Output format for the graph visualization (default: svg)')
-    parser.add_argument('--metrics', '-m', action='store_true', help='Include code complexity metrics (requires eslintcc)')
-    parser.add_argument('--metrics-output', help='Output file path for complexity metrics JSON')
     parser.add_argument('--list', '-t', help='Output file path for the text adjacency list')
     parser.add_argument('--non-interactive', '-n', action='store_true', help='Run in non-interactive mode (requires --path)')
     
@@ -309,12 +259,6 @@ def main():
     print("\nCreating dependency graph...")
     G = create_dependency_graph(manifest_files)
     
-    complexity_map = None
-    if args.metrics:
-        print("Running complexity analysis with eslintcc...")
-        metrics = run_eslintcc(dir_path, args.metrics_output)
-        complexity_map = generate_complexity_map(metrics)
-    
     if args.list:
         # If list output path is not specified with a full path, save it in the output directory
         list_path = args.list
@@ -324,7 +268,7 @@ def main():
         generate_adjacency_list(G, list_path)
     
     print(f"Visualizing dependency graph (format: {args.format})...")
-    dot_path, output_path = visualize_with_graphviz(G, args.output, output_dir, complexity_map, args.format)
+    dot_path, output_path = visualize_with_graphviz(G, args.output, output_dir, args.format)
     
     print("\nFiles generated:")
     print(f"- DOT file: {dot_path}")

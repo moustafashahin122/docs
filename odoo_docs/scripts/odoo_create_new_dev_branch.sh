@@ -29,6 +29,12 @@ if git show-ref --verify --quiet "refs/heads/$dev_branch"; then
 fi
 
 dev_db="${dev_branch}"
+# Check if there is already a database with the dev_branch name
+if psql -lqt | cut -d \| -f 1 | grep -qw "$dev_db"; then
+    echo "Database $dev_db already exists. Please provide a different branch name."
+    exit 1
+fi
+
 
 git fetch --all
 # Checkout to the specified branch before creating a new one
@@ -36,9 +42,7 @@ git checkout "$existing_branch"
 # pull latest changes from the branch
 git pull origin "$existing_branch" >/dev/null 
 
-# Drop the existing backup database if it exists
-dropdb "$dev_db" >/dev/null 
-rm -r ~/.local/share/Odoo/filestore/"$dev_db"  2> /dev/null
+
 
 # Create a new database with the provided name and set the owner to 'odoo'
 createdb --owner=${USER} "$dev_db" >/dev/null 
