@@ -9,6 +9,12 @@ from .utilities.io import read_lines, save_lines
 from .utilities.match import recognize_po_file
 
 
+
+
+
+
+
+
 async def translate(source: str, arguments) -> str:
     """ Translates a single string into target language. """
     translator = Translator()
@@ -17,9 +23,13 @@ async def translate(source: str, arguments) -> str:
     return result.text
 
 
+
 def create_close_string(line: str) -> str:
     """ Creates single .po file translation target sting. """
     return r"msgstr " + '"' + line + '"' + "\n"
+
+
+
 
 
 async def solve(new_file: str, old_file: str, arguments):
@@ -52,6 +62,9 @@ async def run(**kwargs):
     parser.add_argument('--dest', type=str, help='Destination directory you want to translated files to end up in',
                         default=kwargs.get('dest', TRANSLATED_PATH))
     arguments = parser.parse_args()
+
+
+    
 
     for file in os.listdir(arguments.src):
         if recognize_po_file(file):

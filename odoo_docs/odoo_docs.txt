@@ -3549,9 +3549,83 @@ class PartnerXlsx(models.AbstractModel):
 
 	5123456789012346
 12 25 123
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
+****************************** dynamic pdf reports  ********************************
+
+
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+from collections import defaultdict
+
+from odoo import _, models
+
+class EmployeeResumeReport(models.AbstractModel):
+    _name = 'report.hr_skills.report_employee_cv'
+    _description = 'Employee Resume'
+
+    def _get_report_values(self, docids, data=None):
+        show_others = (data or {}).get('show_others')
+        employees = self.env['hr.employee'].browse(docids)
+
+        resume_lines = {}
+        for employee in employees:
+            resume_lines[employee] = defaultdict(self.env['hr.resume.line'].browse)
+            for line in employee.resume_line_ids:
+                if not show_others and not line.line_type_id:
+                    continue
+                resume_lines[employee][line.line_type_id.name or _('Other')] |= line
+
+        return {
+            'doc_ids': docids,
+            'doc_model': 'hr.employee',
+            'docs': employees,
+            'resume_lines': resume_lines,
+        }
+
+
+********************************** create custom plan button ************************************
+
+
+         <div class="mt-2">
+                                    <t t-set="product_dict" t-value="{'product_id': product.id}" />
+                                    <owl-component name="real_estate_inventory_website_ui.create_custom_plan_button" 
+                                        t-att-props="json.dumps(product_dict)" />
+                                </div>
+****************************** paymob ************************************
+
+integrations 
+card 4593733
+
+
+
+****************************** Store Credintials safely ************************************
+
+bash
+export FIREBASE_CREDENTIAL_JSON='{...full json...}'
+
+
+
+import os
+import json
+from firebase_admin import credentials
+
+cred_json = os.getenv("FIREBASE_CREDENTIAL_JSON")
+if not cred_json:
+    raise RuntimeError("FIREBASE_CREDENTIAL_JSON not set")
+
+cred = credentials.Certificate(json.loads(cred_json))
+firebase_app = firebase_admin.initialize_app(cred)
+
+
+
+
+
+
+
+
+
+
+
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
-****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ****************************************************************** ++++++++++++++++++++++++++++++++ ************************************
 ****************************** ++++++++++++++++++++++++++++++++ ************************************
