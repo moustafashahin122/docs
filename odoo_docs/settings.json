@@ -1,0 +1,152 @@
+{
+    "java.help.firstView": "gettingStarted",
+    "editor.suggestSelection": "first",
+    "python.jediEnabled": false,
+    "java.semanticHighlighting.enabled": true,
+    "vsicons.dontShowNewVersionMessage": true,
+    "atomKeymap.promptV3Features": true,
+    "editor.multiCursorModifier": "ctrlCmd",
+    "editor.formatOnPaste": true,
+    "sync.autoDownload": true,
+    "sync.forceDownload": false,
+    "sync.forceUpload": false,
+    "files.autoSave": "afterDelay",
+    "go.addTags": {
+        "go.useLanguageServer": true,
+        "[go]": {
+            "editor.formatOnSave": true,
+            "editor.codeActionsOnSave": {
+                "source.organizeImports": true
+            },
+            "editor.snippetSuggestions": "none"
+        },
+        "[go.mod]": {
+            "editor.formatOnSave": true,
+            "editor.codeActionsOnSave": {
+                "source.organizeImports": true
+            }
+        },
+        "gopls": {
+            "usePlaceholders": true,
+            "staticcheck": false
+        }
+    },
+    "sync.gist": "3c698cc33020dba7adb8e0b31ed84fb7",
+    "[java]": {
+        "editor.defaultFormatter": "redhat.java"
+    },
+    "autoHide.panelDelay": 5000,
+    "autoHide.sideBarDelay": 5000,
+    "sync.removeExtensions": true,
+    "sync.quietSync": true,
+    "sync.autoUpload": true,
+    "java.requirements.JDK11Warning": false,
+    "workbench.colorCustomizations": {},
+    "java.configuration.checkProjectSettingsExclusions": false,
+    "java.refactor.renameFromFileExplorer": "autoApply",
+    "vscode-w3cvalidation.validator-token": "Wed, 08 Jul 2020 04:38:01 GMT",
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
+    "workbench.iconTheme": "vscode-icons",
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "python.languageServer": "Default",
+    "vscode-edge-devtools.mirrorEdits": true,
+    "editor.accessibilitySupport": "off",
+    "disable-hardware-acceleration": false,
+    "matlab.lintOnSave": false,
+    "editor.renderWhitespace": "all",
+    ".m": "cd $dir && matlab -nosplash -nodesktop -r $fileNameWithoutExt",
+    "security.workspace.trust.untrustedFiles": "open",
+    "[python]": {
+        "editor.formatOnType": true,
+        "editor.defaultFormatter": "ms-python.python"
+    },
+    "vscode-edge-devtools.webhint": false,
+    "window.zoomLevel": 2,
+    "git.enableSmartCommit": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "tabnine.experimentalAutoImports": true,
+    "typescript.format.semicolons": "insert",
+    "javascript.format.semicolons": "insert",
+    "editor.formatOnSave": true,
+    "explorer.confirmDelete": false,
+    "liveServer.settings.donotVerifyTags": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "settingsSync.ignoredSettings": [],
+    "powermode.presets": "flames",
+    "powermode.enabled": true,
+    "powermode.shake.intensity": 0,
+    "editor.quickSuggestionsDelay": 1,
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[shellscript]": {
+        "editor.defaultFormatter": "foxundermoon.shell-format"
+    },
+    "shellformat.effectLanguages": [
+        "shellscript",
+        "dockerfile",
+        "dotenv",
+        "hosts",
+        "jvmoptions",
+        "ignore",
+        "gitignore",
+        "properties",
+        "spring-boot-properties",
+        "azcli",
+        "bats"
+    ],
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "editor.smoothScrolling": true,
+    "terminal.integrated.smoothScrolling": true,
+    "workbench.list.smoothScrolling": true,
+    "errorLens.enabledDiagnosticLevels": [
+        "error"
+    ],
+    "python.linting.pylintEnabled": true,
+    "[xml]": {
+        "editor.defaultFormatter": "redhat.vscode-xml"
+    },
+    "python.autoComplete.extraPaths": [
+        "${workspaceRoot}/odoo/addons",
+        "${workspaceRoot}/odoo",
+        "${workspaceRoot}/odoo/openerp/addons"
+    ],
+    "python.linting.enabled": true,
+    "python.formatting.provider": "yapf",
+    "python.linting.pep8Enabled": true,
+    "files.exclude": {
+        "**/*.pyc": true
+    },
+    "python.analysis.extraPaths": [
+        "/usr/lib/python3/dist-packages/odoo",
+        "${workspaceRoot}/odoo/addons",
+        "${workspaceRoot}/odoo",
+        "${workspaceRoot}/odoo/openerp/addons"
+    ],
+    "redhat.telemetry.enabled": true,
+    "sonarlint.rules": {
+        "python:S905": {
+            "level": "off"
+        },
+        "python:S125": {
+            "level": "off"
+        },
+        "python:S1542": {
+            "level": "off"
+        }
+    },
+    "workbench.sideBar.location": "right"
+}

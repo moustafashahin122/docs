@@ -67,6 +67,25 @@ def create_dependency_graph(manifest_files):
     
     return G
 
+def get_dependents_subgraph(G, root_module):
+    """Return a subgraph containing the root_module and all modules that (directly or indirectly) depend on it."""
+    if root_module not in G:
+        print(f"Module '{root_module}' not found in the dependency graph.")
+        return G.subgraph([]).copy()
+    # Find all nodes that have a path to root_module (i.e., all dependents)
+    dependents = set()
+    for node in G.nodes():
+        if node == root_module:
+            dependents.add(node)
+        else:
+            try:
+                if nx.has_path(G, node, root_module):
+                    dependents.add(node)
+            except nx.NetworkXError:
+                continue
+    # The subgraph should include the root and all its dependents
+    return G.subgraph(dependents).copy()
+
 
 def visualize_with_graphviz(G, output_file=None, output_dir=None, format_type='svg'):
     """Visualize the dependency graph using Graphviz.
@@ -230,9 +249,10 @@ def main():
                         help='Output format for the graph visualization (default: svg)')
     parser.add_argument('--list', '-t', help='Output file path for the text adjacency list')
     parser.add_argument('--non-interactive', '-n', action='store_true', help='Run in non-interactive mode (requires --path)')
-    
+    parser.add_argument('--module-name', '-m', help='Root module name to render only its dependency graph (show all modules that depend on this one)')
+
     args = parser.parse_args()
-    
+
     # Get directory path - either from arguments or by asking the user
     if args.non_interactive:
         if not args.path:
@@ -241,42 +261,90 @@ def main():
         dir_path = args.path
     else:
         dir_path = args.path if args.path else get_directory_input()
-    
+
     # If output directory is not specified, use the addons directory
     output_dir = args.output_dir if args.output_dir else dir_path
-    
+
     print(f"\nSearching for manifest files in {dir_path}...")
     manifest_files = find_manifest_files(dir_path)
     print(f"Found {len(manifest_files)} manifest files.")
-    
+
     if not manifest_files:
         print(f"Warning: No '__manifest__.py' files found in {dir_path}. Is this an Odoo addons directory?")
         if not args.non_interactive:
             if input("Continue anyway? (y/n): ").strip().lower() != 'y':
                 print("Exiting.")
                 sys.exit(0)
-    
+
     print("\nCreating dependency graph...")
-    G = create_dependency_graph(manifest_files)
-    
+    G_full = create_dependency_graph(manifest_files)
+
+    if args.module_name:
+        # Save the full dependency graph first
+        print(f"\nSaving the full dependency graph (format: {args.format})...")
+        full_output_name = args.output or 'odoo_dependency_graph'
+        dot_path_full, output_path_full = visualize_with_graphviz(G_full, full_output_name, output_dir, args.format)
+        print(f"- DOT file (full): {dot_path_full}")
+        if output_path_full:
+            print(f"- {args.format.upper()} file (full): {output_path_full}")
+
+        # Now extract and save the subgraph for the module
+        print(f"\nExtracting subgraph for module '{args.module_name}' and its dependents...")
+        G = get_dependents_subgraph(G_full, args.module_name)
+        if len(G.nodes()) == 0:
+            print(f"No modules found that depend on '{args.module_name}'. Exiting.")
+            sys.exit(0)
+
+        # Save the subgraph with a different filename
+        subgraph_output_name = f"{args.module_name}_dependents"
+        dot_path, output_path = visualize_with_graphviz(G, subgraph_output_name, output_dir, args.format)
+        print(f"- DOT file (subgraph): {dot_path}")
+        if output_path:
+            print(f"- {args.format.upper()} file (subgraph): {output_path}")
+
+        # Optionally, generate adjacency list for the subgraph if requested
+        if args.list:
+            list_path = args.list
+            if not os.path.isabs(list_path):
+                list_path = os.path.join(output_dir, list_path)
+            print(f"Generating adjacency list to {list_path}...")
+            generate_adjacency_list(G, list_path)
+
+        print("\nDone!")
+
+        # Ask if user wants to open the generated subgraph file
+        if not args.non_interactive and output_path and os.path.exists(output_path):
+            if input(f"\nWould you like to open the {args.format.upper()} file for the subgraph? (y/n): ").strip().lower() == 'y':
+                try:
+                    if sys.platform == 'win32':
+                        os.startfile(output_path)
+                    elif sys.platform == 'darwin':  # macOS
+                        subprocess.run(['open', output_path])
+                    else:  # Linux and other Unix-like
+                        subprocess.run(['xdg-open', output_path])
+                except Exception as e:
+                    print(f"Could not open the file: {e}")
+        return
+
+    # If no module_name, proceed as before with the full graph
+    G = G_full
     if args.list:
-        # If list output path is not specified with a full path, save it in the output directory
         list_path = args.list
         if not os.path.isabs(list_path):
             list_path = os.path.join(output_dir, list_path)
         print(f"Generating adjacency list to {list_path}...")
         generate_adjacency_list(G, list_path)
-    
+
     print(f"Visualizing dependency graph (format: {args.format})...")
     dot_path, output_path = visualize_with_graphviz(G, args.output, output_dir, args.format)
-    
+
     print("\nFiles generated:")
     print(f"- DOT file: {dot_path}")
     if output_path:
         print(f"- {args.format.upper()} file: {output_path}")
-    
+
     print("\nDone!")
-    
+
     # Ask if user wants to open the generated file
     if not args.non_interactive and output_path and os.path.exists(output_path):
         if input(f"\nWould you like to open the {args.format.upper()} file? (y/n): ").strip().lower() == 'y':
