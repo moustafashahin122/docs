@@ -1,17 +1,50 @@
-// Place your key bindings in this file to override the defaults
+// Empty
 [
     {
+        "key": "ctrl+k z",
+        "command": "-workbench.action.toggleZenMode"
+    },
+    {
+        "key": "ctrl+u",
+        "command": "workbench.action.debug.run"
+    },
+    {
+        "key": "ctrl+f5",
+        "command": "-workbench.action.debug.run"
+    },
+    {
         "key": "ctrl+i",
-        "command": "composerMode.agent"
+        "command": "workbench.action.debug.stop",
+        "when": "inDebugMode"
     },
     {
-        "key": "ctrl+e",
-        "command": "composerMode.background"
+        "key": "shift+f5",
+        "command": "-workbench.action.debug.stop",
+        "when": "inDebugMode"
     },
     {
-        "key": "ctrl+alt+p",
-        "command": "-composer.openAddContextMenu",
-        "when": "composerFocused && !editorTextFocus"
+        "key": "ctrl+f1",
+        "command": "workbench.action.terminal.runActiveFile"
+    },
+    {
+        "key": "pagedown",
+        "command": "editor.action.copyLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "shift+alt+down",
+        "command": "-editor.action.copyLinesDownAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "pageup",
+        "command": "editor.action.copyLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
+    },
+    {
+        "key": "shift+alt+up",
+        "command": "-editor.action.copyLinesUpAction",
+        "when": "editorTextFocus && !editorReadonly"
     },
     {
         "key": "ctrl+alt+p",
@@ -35,30 +68,99 @@
     },
     {
         "key": "ctrl+insert",
-        "command": "-editor.action.clipboardCopyAction"
-    },
-    {
-        "key": "ctrl+insert",
         "command": "editor.debug.action.selectionToWatch"
     },
     {
-        "key": "pageup",
-        "command": "editor.action.copyLinesUpAction",
-        "when": "editorTextFocus && !editorReadonly"
+        "key": "ctrl+n",
+        "command": "-workbench.action.files.newUntitledFile"
     },
     {
-        "key": "shift+alt+up",
-        "command": "-editor.action.copyLinesUpAction",
-        "when": "editorTextFocus && !editorReadonly"
+        "key": "insert",
+        "command": "editor.action.inlineDiffs.acceptPartialEdit",
+        "when": "editorHasPromptBar && editorPromptBarFocused"
     },
     {
-        "key": "pagedown",
-        "command": "editor.action.copyLinesDownAction",
-        "when": "editorTextFocus && !editorReadonly"
+        "key": "ctrl+shift+y",
+        "command": "-editor.action.inlineDiffs.acceptPartialEdit",
+        "when": "editorHasPromptBar && editorPromptBarFocused"
     },
     {
-        "key": "shift+alt+down",
-        "command": "-editor.action.copyLinesDownAction",
-        "when": "editorTextFocus && !editorReadonly"
-    }
-]   
+        "key": "ctrl+y",
+        "command": "-editor.action.inlineDiffs.acceptPartialEdit",
+        "when": "editorHasPromptBar && editorPromptBarFocused"
+    },
+    {
+        "key": "insert",
+        "command": "-editor.action.toggleOvertypeInsertMode"
+    },
+    {
+        "key": "insert",
+        "command": "editor.action.inlineDiffs.acceptPartialEdit",
+        "when": "editorTextFocus && @inlineDiffs.acceptPartialEdit.isActiveEditorWithDiffs"
+    },
+    {
+        "key": "ctrl+shift+y",
+        "command": "-editor.action.inlineDiffs.acceptPartialEdit",
+        "when": "editorTextFocus && @inlineDiffs.acceptPartialEdit.isActiveEditorWithDiffs"
+    },
+    {
+        "key": "alt+insert",
+        "command": "editor.action.inlineDiffs.rejectPartialEdit",
+        "when": "editorHasPromptBar && editorPromptBarFocused"
+    },
+    {
+        "key": "ctrl+n",
+        "command": "-editor.action.inlineDiffs.rejectPartialEdit",
+        "when": "editorHasPromptBar && editorPromptBarFocused"
+    },
+    {
+        "key": "alt+insert",
+        "command": "editor.action.inlineDiffs.rejectPartialEdit",
+        "when": "editorTextFocus && @inlineDiffs.rejectPartialEdit.isActiveEditorWithDiffs"
+    },
+    {
+        "key": "ctrl+n",
+        "command": "-editor.action.inlineDiffs.rejectPartialEdit",
+        "when": "editorTextFocus && @inlineDiffs.rejectPartialEdit.isActiveEditorWithDiffs"
+    },
+    {
+        "key": "alt+insert",
+        "command": "editor.action.simpleInlineDiffs.rejectAll",
+        "when": "editorTextFocus && hasDisplayedSimpleDiff"
+    },
+    {
+        "key": "ctrl+h",
+        "command": "-editor.action.simpleInlineDiffs.rejectAll",
+        "when": "editorTextFocus && hasDisplayedSimpleDiff"
+    },
+    {
+        "key": "ctrl+right",
+        "command": "-breadcrumbs.focusNext",
+        "when": "breadcrumbsActive && breadcrumbsVisible"
+    },
+    {
+        "key": "ctrl+right",
+        "command": "-breadcrumbs.focusNextWithPicker",
+        "when": "breadcrumbsActive && breadcrumbsVisible && listFocus && !inputFocus && !treestickyScrollFocused"
+    },
+    {
+        "key": "ctrl+right",
+        "command": "-cursorWordAccessibilityRight",
+        "when": "accessibilityModeEnabled && isWindows && textInputFocus && focusedView == 'workbench.panel.output'"
+    },
+    {
+        "key": "ctrl+right",
+        "command": "-cursorWordEndRight",
+        "when": "textInputFocus && !accessibilityModeEnabled"
+    },
+    {
+        "key": "ctrl+right",
+        "command": "-gitlens.key.ctrl+right",
+        "when": "gitlens:key:ctrl+right"
+    },
+    {
+        "key": "ctrl+right",
+        "command": "-quickInput.acceptInBackground",
+        "when": "cursorAtEndOfQuickInputBox && inQuickInput && quickInputType == 'quickPick' || inQuickInput && !inputFocus && quickInputType == 'quickPick'"
+    },
+]

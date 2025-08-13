@@ -1,13 +1,6 @@
 // Empty
 [
-    {
-        "key": "ctrl+k",
-        "command": "workbench.action.toggleZenMode"
-    },
-    {
-        "key": "ctrl+k z",
-        "command": "-workbench.action.toggleZenMode"
-    },
+  
     {
         "key": "ctrl+u",
         "command": "workbench.action.debug.run"
@@ -15,11 +8,6 @@
     {
         "key": "ctrl+f5",
         "command": "-workbench.action.debug.run"
-    },
-    {
-        "key": "ctrl+i",
-        "command": "workbench.action.debug.stop",
-        "when": "inDebugMode"
     },
     {
         "key": "shift+f5",
