@@ -20,6 +20,32 @@ This comprehensive guide covers the most important Docker commands you'll need f
 
 *This section contains your frequently used Docker commands. Update it periodically as you discover new workflows.*
 
+### to deploy manually
+
+```bash
+
+source  /home/odoo17/odoo-17-custom-addons/app_fiebase_creds.sh
+
+cd  /home/odoo17/odoo-17-custom-addons/staging/epm-betaegypt
+
+git  pull
+
+docker-compose  -f  docker-compose-stage.yml  down && \
+
+docker-compose  -f  docker-compose-stage.yml  up  -d  --build
+
+```
+### To upagrade modules man
+
+```bash
+docker exec -it my-app-container bash
+
+--gevent-port 8333
+
+python3 /bin/odoo   --stop-after-init -d flow_staging_server -p 8112  -c  /etc/odoo/odoo.conf -u real_estate_inventory  --logfile= 
+
+```
+
 ### Daily Workflow Commands
 ```bash
 # Add your most common commands here
@@ -32,6 +58,36 @@ docker info
 # Show environment variables in compose
 docker-compose config
 
+# Options:
+  # -a, --attach               Attach STDOUT/STDERR and forward signals
+  #     --detach-keys string   Override the key sequence for detaching a container
+  # -i, --interactive          Attach container's STDIN
+docker start -ia <container_id>
+
+
+# Open container shell
+
+#### Inside the container shell - process management:
+
+# To upgrade modules form terminal
+docker exec -it my-app-container bash
+# To list all the processes
+ps aux
+# or
+top
+# List processes by name
+ps aux | grep <process_name>
+# Kill a process by PID
+kill <process_id>
+# Kill a process by name
+pkill <process_name>
+# Force kill a process
+kill -9 <process_id>
+
+
+# For non-systemd containers, restart application manually:
+# Stop the process and start it again
+pkill <process_name> && /path/to/your/application &
 
 
 show compiled conf
@@ -39,6 +95,7 @@ docker-compose -f docker-compose-stage.yml config
 
 logs
 docker logs -f odoo
+
 
 # Check if Docker is installed
 docker --version
@@ -67,34 +124,8 @@ docker rmi <image_id>
 
 
 
-```
-
-### Project-Specific Commands
-```bash
-# Add commands specific to your current projects
-# Example:
-# docker-compose -f my-project/docker-compose.yml up -d
-# docker exec -it my-app-container bash
-```
-
-### Quick Cleanup Commands
-```bash
-# Add your preferred cleanup commands
-# Example:
-# docker system prune
-# docker-compose down -v
-```
-
-### Custom Shortcuts
-```bash
-# Add any custom aliases or shortcuts you create
-# Example:
-# alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
-# alias dlog='docker logs -f'
-```
-
 ### Notes
-```
+```bash
 Add any notes about your workflow, reminders, or project-specific information:
 
 - Remember to use docker-compose-stage.yml for staging environment
@@ -102,9 +133,7 @@ Add any notes about your workflow, reminders, or project-specific information:
 - Common ports: 8080, 3000, 5432
 - 
 ```
-
 ---
-
 ## Docker Basics & Installation
 
 ### What is Docker?

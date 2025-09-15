@@ -81,30 +81,45 @@ import asyncio
 
 
 
-
 import os
 import shutil
 from translate_po.main import run
-module_path = input("Enter the path of the module: ")
-# copy the file in the module path /i18n/ *.pot   to file po
-i18n_folder = module_path + "/i18n/"
 
-# for filename in os.listdir(i18n_folder):
-#     # ask if user if he wants to translate each
+# Ask user for translation mode
+mode = input("Choose mode (1: Translate entire module, 2: Translate single file): ")
 
-
-
-#     if filename.endswith(".pot"):
-#         pot_file_path = os.path.join(i18n_folder, filename)
-#         po_file_path = os.path.join(i18n_folder, filename.replace(".pot", ".po"))
+if mode == "1":
+    # Translate entire module
+    module_path = input("Enter the path of the module: ")
+    i18n_folder = module_path + "/i18n/"
+    asyncio.run(run(fro="en", to="ar", src=i18n_folder, dest=i18n_folder))
+elif mode == "2":
+    # Translate single file
+    file_path = input("Enter the path of the .po/.pot file: ")
+    if os.path.isfile(file_path):
+        # Create temporary directory
+        temp_dir = "temp123"
+        if os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
+        os.makedirs(temp_dir)
         
-#         # Copy the .pot file to .po
-#         shutil.copyfile(pot_file_path, po_file_path)
-#         print(f"Copied {pot_file_path} to {po_file_path}")
-
-# print("All .pot files have been copied and renamed to .po files.")
-
-# def run_awaited(fro, to, src, dest):
-#     return await run(fro=fro, to=to, src=src, dest=dest)
-
-asyncio.run(run(fro="en", to="ar" ,src=i18n_folder, dest=i18n_folder))
+        # Copy file to temp directory
+        file_name = os.path.basename(file_path)
+        temp_file_path = os.path.join(temp_dir, file_name)
+        shutil.copy2(file_path, temp_file_path)
+        
+        # Run translation on temp directory
+        asyncio.run(run(fro="en", to="ar", src=temp_dir, dest=temp_dir))
+        
+        # Copy translated file back to original location
+        translated_file = temp_file_path.replace('.pot', '.po') if temp_file_path.endswith('.pot') else temp_file_path
+        if os.path.exists(translated_file):
+            original_translated_path = file_path.replace('.pot', '.po') if file_path.endswith('.pot') else file_path
+            shutil.copy2(translated_file, original_translated_path)
+        
+        # Remove temp directory
+        shutil.rmtree(temp_dir)
+    else:
+        print("Error: File not found!")
+else:
+    print("Invalid mode selected!")

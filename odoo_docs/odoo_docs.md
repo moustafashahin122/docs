@@ -168,6 +168,7 @@ git branch -r
 git rm --cached '*.pyc'
 ```
 
+ git fetch origin 18.0:18.0 --depth=1
 ---
 
 ## Odoo Commands
