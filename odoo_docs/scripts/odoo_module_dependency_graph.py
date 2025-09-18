@@ -87,6 +87,31 @@ def get_dependents_subgraph(G, root_module):
     return G.subgraph(dependents).copy()
 
 
+def get_dependencies_subgraph(G, root_module):
+    """Return a subgraph containing the root_module and all modules that it (directly or indirectly) depends on."""
+    if root_module not in G:
+        print(f"Module '{root_module}' not found in the dependency graph.")
+        return G.subgraph([]).copy()
+    # Find all nodes that root_module has a path to (i.e., all dependencies)
+    dependencies = set()
+    dependencies.add(root_module)  # Include the root module itself
+    
+    try:
+        # Get all nodes reachable from root_module (all dependencies)
+        for node in G.nodes():
+            if node != root_module:
+                try:
+                    if nx.has_path(G, root_module, node):
+                        dependencies.add(node)
+                except nx.NetworkXError:
+                    continue
+    except nx.NetworkXError:
+        pass
+    
+    # The subgraph should include the root and all its dependencies
+    return G.subgraph(dependencies).copy()
+
+
 def visualize_with_graphviz(G, output_file=None, output_dir=None, format_type='svg'):
     """Visualize the dependency graph using Graphviz.
     
@@ -109,9 +134,11 @@ def visualize_with_graphviz(G, output_file=None, output_dir=None, format_type='s
     dependency_count = {}
     for node in G.nodes():
         dependency_count[node] = len(list(G.predecessors(node)))
+    print(f"Dependency count: {dependency_count}")
     
     # Find max dependency count for normalization
-    max_deps = max(dependency_count.values()) if dependency_count else 1
+    max_deps = max(1,max(dependency_count.values())) if dependency_count else 1
+    print(f"Max dependencies: {max_deps}")
     
     # Add nodes with styling based on dependencies
     for node in G.nodes():
@@ -249,7 +276,7 @@ def main():
                         help='Output format for the graph visualization (default: svg)')
     parser.add_argument('--list', '-t', help='Output file path for the text adjacency list')
     parser.add_argument('--non-interactive', '-n', action='store_true', help='Run in non-interactive mode (requires --path)')
-    parser.add_argument('--module-name', '-m', help='Root module name to render only its dependency graph (show all modules that depend on this one)')
+    parser.add_argument('--module-name', '-m', help='Root module name to generate dependency graphs for (creates two graphs: one showing modules that depend on it, and another showing modules it depends on)')
 
     args = parser.parse_args()
 
@@ -288,42 +315,73 @@ def main():
         if output_path_full:
             print(f"- {args.format.upper()} file (full): {output_path_full}")
 
-        # Now extract and save the subgraph for the module
-        print(f"\nExtracting subgraph for module '{args.module_name}' and its dependents...")
-        G = get_dependents_subgraph(G_full, args.module_name)
-        if len(G.nodes()) == 0:
-            print(f"No modules found that depend on '{args.module_name}'. Exiting.")
-            sys.exit(0)
+        # Extract and save the dependents subgraph (modules that depend on this one)
+        print(f"\nExtracting dependents subgraph for module '{args.module_name}' (modules that depend on it)...")
+        G_dependents = get_dependents_subgraph(G_full, args.module_name)
+        dependents_output_name = f"{args.module_name}_dependents"
+        
+        if len(G_dependents.nodes()) > 0:
+            dot_path_dependents, output_path_dependents = visualize_with_graphviz(G_dependents, dependents_output_name, output_dir, args.format)
+            print(f"- DOT file (dependents): {dot_path_dependents}")
+            if output_path_dependents:
+                print(f"- {args.format.upper()} file (dependents): {output_path_dependents}")
+        else:
+            print(f"No modules found that depend on '{args.module_name}'.")
+            output_path_dependents = None
 
-        # Save the subgraph with a different filename
-        subgraph_output_name = f"{args.module_name}_dependents"
-        dot_path, output_path = visualize_with_graphviz(G, subgraph_output_name, output_dir, args.format)
-        print(f"- DOT file (subgraph): {dot_path}")
-        if output_path:
-            print(f"- {args.format.upper()} file (subgraph): {output_path}")
+        # Extract and save the dependencies subgraph (modules that this one depends on)
+        print(f"\nExtracting dependencies subgraph for module '{args.module_name}' (modules it depends on)...")
+        G_dependencies = get_dependencies_subgraph(G_full, args.module_name)
+        dependencies_output_name = f"{args.module_name}_dependencies"
+        
+        if len(G_dependencies.nodes()) > 0:
+            dot_path_dependencies, output_path_dependencies = visualize_with_graphviz(G_dependencies, dependencies_output_name, output_dir, args.format)
+            print(f"- DOT file (dependencies): {dot_path_dependencies}")
+            if output_path_dependencies:
+                print(f"- {args.format.upper()} file (dependencies): {output_path_dependencies}")
+        else:
+            print(f"Module '{args.module_name}' has no dependencies.")
+            output_path_dependencies = None
 
-        # Optionally, generate adjacency list for the subgraph if requested
+        # Generate adjacency lists if requested
         if args.list:
             list_path = args.list
             if not os.path.isabs(list_path):
                 list_path = os.path.join(output_dir, list_path)
-            print(f"Generating adjacency list to {list_path}...")
-            generate_adjacency_list(G, list_path)
+            
+            # Generate adjacency list for dependents if they exist
+            if len(G_dependents.nodes()) > 0:
+                dependents_list_path = list_path.replace('.txt', '_dependents.txt') if list_path.endswith('.txt') else f"{list_path}_dependents"
+                print(f"Generating dependents adjacency list to {dependents_list_path}...")
+                generate_adjacency_list(G_dependents, dependents_list_path)
+            
+            # Generate adjacency list for dependencies if they exist
+            if len(G_dependencies.nodes()) > 0:
+                dependencies_list_path = list_path.replace('.txt', '_dependencies.txt') if list_path.endswith('.txt') else f"{list_path}_dependencies"
+                print(f"Generating dependencies adjacency list to {dependencies_list_path}...")
+                generate_adjacency_list(G_dependencies, dependencies_list_path)
 
         print("\nDone!")
 
-        # Ask if user wants to open the generated subgraph file
-        if not args.non_interactive and output_path and os.path.exists(output_path):
-            if input(f"\nWould you like to open the {args.format.upper()} file for the subgraph? (y/n): ").strip().lower() == 'y':
-                try:
-                    if sys.platform == 'win32':
-                        os.startfile(output_path)
-                    elif sys.platform == 'darwin':  # macOS
-                        subprocess.run(['open', output_path])
-                    else:  # Linux and other Unix-like
-                        subprocess.run(['xdg-open', output_path])
-                except Exception as e:
-                    print(f"Could not open the file: {e}")
+        # Ask if user wants to open the generated files
+        if not args.non_interactive:
+            files_to_open = []
+            if output_path_dependents and os.path.exists(output_path_dependents):
+                files_to_open.append(("dependents", output_path_dependents))
+            if output_path_dependencies and os.path.exists(output_path_dependencies):
+                files_to_open.append(("dependencies", output_path_dependencies))
+            
+            for file_type, file_path in files_to_open:
+                if input(f"\nWould you like to open the {args.format.upper()} file for {file_type}? (y/n): ").strip().lower() == 'y':
+                    try:
+                        if sys.platform == 'win32':
+                            os.startfile(file_path)
+                        elif sys.platform == 'darwin':  # macOS
+                            subprocess.run(['open', file_path])
+                        else:  # Linux and other Unix-like
+                            subprocess.run(['xdg-open', file_path])
+                    except Exception as e:
+                        print(f"Could not open the file: {e}")
         return
 
     # If no module_name, proceed as before with the full graph
