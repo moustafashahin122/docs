@@ -20,6 +20,7 @@
 16. [VS Code Debugger](#vs-code-debugger)
 17. [Database Operations](#database-operations)
 18. [Many2many Relationships](#many2many-relationships)
+19. [py-spy Profiling](#py-spy-profiling)
 
 ---
 
@@ -1982,6 +1983,76 @@ class PaymentPlan(models.AbstractModel):
 ```xml
 <field name="contract_partner_ids" mode="kanban" readonly="1"/>
 ```
+
+---
+
+---
+
+## py-spy Profiling
+
+py-spy is a sampling profiler for Python programs with minimal overhead, useful for identifying Odoo performance bottlenecks.
+
+Rate 200 is good
+
+### Most Used Commands
+
+```bash
+# Real-time process monitoring (most common)
+(odoo_16_env) shahin@shahin:/opt/work_code/odoo_16$ sudo env "PATH=$PATH" py-spy top --pid 1947
+
+# Generate flame graph
+sudo env "PATH=$PATH" py-spy record -o profile.svg --pid 1947 --duration 30
+
+# Get stack trace snapshot
+sudo env "PATH=$PATH" py-spy dump --pid 1947
+
+# Find Odoo process ID
+ps aux | grep odoo-bin
+pgrep -f odoo-bin
+```
+
+### Common Options
+
+```bash
+# Monitor with custom duration and rate
+sudo env "PATH=$PATH" py-spy top --pid 1947 --duration 60 --rate 500
+
+# Record with different formats
+sudo env "PATH=$PATH" py-spy record -o profile.json --format speedscope --pid 1947
+sudo env "PATH=$PATH" py-spy record -o profile.svg --pid 1947 --rate 100 --duration 60
+
+# Include native code and subprocesses
+sudo env "PATH=$PATH" py-spy top --pid 1947 --native --subprocesses
+
+# Non-blocking mode (minimal impact)
+sudo env "PATH=$PATH" py-spy top --pid 1947 --nonblocking
+```
+
+### Specific Use Cases
+
+```bash
+# Profile database operations
+sudo env "PATH=$PATH" py-spy record -o db_ops.svg --pid 1947 --duration 120
+
+# Profile module upgrade
+sudo env "PATH=$PATH" py-spy record -o module_upgrade.svg --pid 1947 --duration 300
+
+# High-frequency web request analysis
+sudo env "PATH=$PATH" py-spy record -o web_requests.svg --pid 1947 --rate 1000 --duration 60
+
+# Save analysis to file
+sudo env "PATH=$PATH" py-spy top --pid 1947 --duration 300 > analysis.txt
+```
+
+### Quick Reference
+
+- **top**: Real-time monitoring
+- **record**: Generate flame graphs (SVG/JSON)
+- **dump**: Current stack trace
+- **--duration**: Time to profile (seconds)
+- **--rate**: Sampling frequency (Hz)
+- **--native**: Include native code
+- **--nonblocking**: Minimal performance impact
 
 ---
 

@@ -77,6 +77,10 @@ echo
 # Find and replace matching directories
 echo "Scanning target subdirectories for matches in source..."
 
+# Arrays to track replaced and skipped directories
+replaced_dirs=()
+skipped_dirs=()
+
 for target_subdir in "$TARGET_DIR"/*; do
     # Skip if not a directory
     [ ! -d "$target_subdir" ] && continue
@@ -86,25 +90,50 @@ for target_subdir in "$TARGET_DIR"/*; do
     
     # Check if matching directory exists in source
     if [ -d "$source_match" ]; then
-        echo "Found match for: $dir_name"
-        echo -n "Replace '$target_subdir' with '$source_match'? [y/N]: "
-        read answer
+        echo "Found match for: $dir_name - replacing automatically..."
         
-        if [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
-            echo "Removing old directory..."
-            rm -rf "$target_subdir"
-            
-            echo "Copying new directory..."
-            cp -r "$source_match" "$target_subdir"
-            
-            echo "Replaced: $dir_name"
-        else
-            echo "Skipped: $dir_name"
-        fi
+        echo "Removing old directory..."
+        rm -rf "$target_subdir"
+        
+        echo "Copying new directory..."
+        cp -r "$source_match" "$target_subdir"
+        
+        echo "Replaced: $dir_name"
+        # Add to replaced directories list
+        replaced_dirs+=("$dir_name")
         echo
     else
         echo "No match found for: $dir_name (skipping)"
+        # Add to skipped directories list (no match found)
+        skipped_dirs+=("$dir_name")
     fi
 done
 
 echo "Done!"
+echo
+echo "===================="
+echo "REPLACEMENT SUMMARY:"
+echo "===================="
+
+if [ ${#replaced_dirs[@]} -eq 0 ]; then
+    echo "No directories were replaced."
+else
+    echo "The following directories were replaced:"
+    for dir in "${replaced_dirs[@]}"; do
+        echo "  - $dir"
+    done
+    echo
+    echo "Total replaced: ${#replaced_dirs[@]} directories"
+    fi
+    
+    echo
+if [ ${#skipped_dirs[@]} -eq 0 ]; then
+    echo "No directories were skipped."
+else
+    echo "The following directories were skipped:"
+    for dir in "${skipped_dirs[@]}"; do
+        echo "  - $dir"
+    done
+    echo
+    echo "Total skipped: ${#skipped_dirs[@]} directories"
+fi
