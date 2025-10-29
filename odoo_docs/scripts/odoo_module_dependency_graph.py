@@ -4,20 +4,23 @@
 This script parses Odoo module manifests and generates a dependency graph.
 
 Usage:
-    python module_dependency_graph.py [options]
+    python module_dependency_graph.py -p <addons_path> -m <module_name|all>
+    
+    For full graph of all modules:
+        python odoo_module_dependency_graph.py -p /path/to/addons -m all
+    
+    For specific module subgraphs:
+        python odoo_module_dependency_graph.py -p /path/to/addons -m module_name
 
-The script will interactively prompt for the addons directory if not provided.
-
-Example:
-    python module_dependency_graph.py --output dependency_graph
+Required arguments:
+    -p, --path: Path to the Odoo addons directory
+    -m, --module-name: Module name or 'all' to generate full graph
 """
 
 import os
 import sys
 import ast
 import argparse
-import subprocess
-from pathlib import Path
 import networkx as nx
 from graphviz import Digraph
 
@@ -268,26 +271,35 @@ def get_directory_input(default_dir='.'):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Generate an Odoo module dependency graph.')
-    parser.add_argument('--path', '-p', help='Path to the Odoo addons directory (if not provided, will prompt for it)')
+    parser = argparse.ArgumentParser(
+        description='Generate an Odoo module dependency graph.',
+        epilog='Examples:\n'
+               '  odoo_module_dependency_graph.py -p /path/to/addons -m all\n'
+               '  odoo_module_dependency_graph.py -p /path/to/addons -m module_name',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument('--path', '-p', required=True,
+                        help='Path to the Odoo addons directory (required)')
+    parser.add_argument('--module-name', '-m', required=True,
+                        help="Module name to analyze, or 'all' to generate full graph of all modules (required)")
     parser.add_argument('--output', '-o', help='Output file name for the graph (without extension)')
     parser.add_argument('--output-dir', '-d', help='Directory to save output files (defaults to addons directory)')
     parser.add_argument('--format', '-f', choices=['svg', 'pdf', 'png'], default='svg', 
                         help='Output format for the graph visualization (default: svg)')
     parser.add_argument('--list', '-t', help='Output file path for the text adjacency list')
-    parser.add_argument('--non-interactive', '-n', action='store_true', help='Run in non-interactive mode (requires --path)')
-    parser.add_argument('--module-name', '-m', help='Root module name to generate dependency graphs for (creates two graphs: one showing modules that depend on it, and another showing modules it depends on)')
 
     args = parser.parse_args()
 
-    # Get directory path - either from arguments or by asking the user
-    if args.non_interactive:
-        if not args.path:
-            print("Error: In non-interactive mode, you must specify the path with --path")
-            sys.exit(1)
-        dir_path = args.path
-    else:
-        dir_path = args.path if args.path else get_directory_input()
+    # Validate directory path
+    dir_path = os.path.abspath(args.path)
+    if not os.path.isdir(dir_path):
+        print(f"Error: '{dir_path}' is not a valid directory.")
+        print("\nUsage:")
+        print("  python odoo_module_dependency_graph.py -p <addons_path> -m <module_name|all>")
+        print("\nExamples:")
+        print("  python odoo_module_dependency_graph.py -p /path/to/addons -m all")
+        print("  python odoo_module_dependency_graph.py -p /path/to/addons -m module_name")
+        sys.exit(1)
 
     # If output directory is not specified, use the addons directory
     output_dir = args.output_dir if args.output_dir else dir_path
@@ -298,123 +310,92 @@ def main():
 
     if not manifest_files:
         print(f"Warning: No '__manifest__.py' files found in {dir_path}. Is this an Odoo addons directory?")
-        if not args.non_interactive:
-            if input("Continue anyway? (y/n): ").strip().lower() != 'y':
-                print("Exiting.")
-                sys.exit(0)
+        print("Exiting.")
+        sys.exit(1)
 
     print("\nCreating dependency graph...")
     G_full = create_dependency_graph(manifest_files)
 
-    if args.module_name:
-        # Save the full dependency graph first
-        print(f"\nSaving the full dependency graph (format: {args.format})...")
-        full_output_name = args.output or 'odoo_dependency_graph'
-        dot_path_full, output_path_full = visualize_with_graphviz(G_full, full_output_name, output_dir, args.format)
-        print(f"- DOT file (full): {dot_path_full}")
-        if output_path_full:
-            print(f"- {args.format.upper()} file (full): {output_path_full}")
-
-        # Extract and save the dependents subgraph (modules that depend on this one)
-        print(f"\nExtracting dependents subgraph for module '{args.module_name}' (modules that depend on it)...")
-        G_dependents = get_dependents_subgraph(G_full, args.module_name)
-        dependents_output_name = f"{args.module_name}_dependents"
+    # Handle -m all case: generate only the full graph
+    if args.module_name.lower() == 'all':
+        output_name = args.output or 'odoo_dependency_graph'
         
-        if len(G_dependents.nodes()) > 0:
-            dot_path_dependents, output_path_dependents = visualize_with_graphviz(G_dependents, dependents_output_name, output_dir, args.format)
-            print(f"- DOT file (dependents): {dot_path_dependents}")
-            if output_path_dependents:
-                print(f"- {args.format.upper()} file (dependents): {output_path_dependents}")
-        else:
-            print(f"No modules found that depend on '{args.module_name}'.")
-            output_path_dependents = None
-
-        # Extract and save the dependencies subgraph (modules that this one depends on)
-        print(f"\nExtracting dependencies subgraph for module '{args.module_name}' (modules it depends on)...")
-        G_dependencies = get_dependencies_subgraph(G_full, args.module_name)
-        dependencies_output_name = f"{args.module_name}_dependencies"
-        
-        if len(G_dependencies.nodes()) > 0:
-            dot_path_dependencies, output_path_dependencies = visualize_with_graphviz(G_dependencies, dependencies_output_name, output_dir, args.format)
-            print(f"- DOT file (dependencies): {dot_path_dependencies}")
-            if output_path_dependencies:
-                print(f"- {args.format.upper()} file (dependencies): {output_path_dependencies}")
-        else:
-            print(f"Module '{args.module_name}' has no dependencies.")
-            output_path_dependencies = None
-
-        # Generate adjacency lists if requested
         if args.list:
             list_path = args.list
             if not os.path.isabs(list_path):
                 list_path = os.path.join(output_dir, list_path)
-            
-            # Generate adjacency list for dependents if they exist
-            if len(G_dependents.nodes()) > 0:
-                dependents_list_path = list_path.replace('.txt', '_dependents.txt') if list_path.endswith('.txt') else f"{list_path}_dependents"
-                print(f"Generating dependents adjacency list to {dependents_list_path}...")
-                generate_adjacency_list(G_dependents, dependents_list_path)
-            
-            # Generate adjacency list for dependencies if they exist
-            if len(G_dependencies.nodes()) > 0:
-                dependencies_list_path = list_path.replace('.txt', '_dependencies.txt') if list_path.endswith('.txt') else f"{list_path}_dependencies"
-                print(f"Generating dependencies adjacency list to {dependencies_list_path}...")
-                generate_adjacency_list(G_dependencies, dependencies_list_path)
-
+            print(f"Generating adjacency list to {list_path}...")
+            generate_adjacency_list(G_full, list_path)
+        
+        print(f"Visualizing full dependency graph (format: {args.format})...")
+        dot_path, output_path = visualize_with_graphviz(G_full, output_name, output_dir, args.format)
+        
+        print("\nFiles generated:")
+        print(f"- DOT file: {dot_path}")
+        if output_path:
+            print(f"- {args.format.upper()} file: {output_path}")
+        
         print("\nDone!")
-
-        # Ask if user wants to open the generated files
-        if not args.non_interactive:
-            files_to_open = []
-            if output_path_dependents and os.path.exists(output_path_dependents):
-                files_to_open.append(("dependents", output_path_dependents))
-            if output_path_dependencies and os.path.exists(output_path_dependencies):
-                files_to_open.append(("dependencies", output_path_dependencies))
-            
-            for file_type, file_path in files_to_open:
-                if input(f"\nWould you like to open the {args.format.upper()} file for {file_type}? (y/n): ").strip().lower() == 'y':
-                    try:
-                        if sys.platform == 'win32':
-                            os.startfile(file_path)
-                        elif sys.platform == 'darwin':  # macOS
-                            subprocess.run(['open', file_path])
-                        else:  # Linux and other Unix-like
-                            subprocess.run(['xdg-open', file_path])
-                    except Exception as e:
-                        print(f"Could not open the file: {e}")
         return
 
-    # If no module_name, proceed as before with the full graph
-    G = G_full
+    # Handle specific module: generate full graph + subgraphs
+    module_name = args.module_name
+    
+    # Save the full dependency graph first
+    print(f"\nSaving the full dependency graph (format: {args.format})...")
+    full_output_name = args.output or 'odoo_dependency_graph'
+    dot_path_full, output_path_full = visualize_with_graphviz(G_full, full_output_name, output_dir, args.format)
+    print(f"- DOT file (full): {dot_path_full}")
+    if output_path_full:
+        print(f"- {args.format.upper()} file (full): {output_path_full}")
+
+    # Extract and save the dependents subgraph (modules that depend on this one)
+    print(f"\nExtracting dependents subgraph for module '{module_name}' (modules that depend on it)...")
+    G_dependents = get_dependents_subgraph(G_full, module_name)
+    dependents_output_name = f"{module_name}_dependents"
+    
+    if len(G_dependents.nodes()) > 0:
+        dot_path_dependents, output_path_dependents = visualize_with_graphviz(G_dependents, dependents_output_name, output_dir, args.format)
+        print(f"- DOT file (dependents): {dot_path_dependents}")
+        if output_path_dependents:
+            print(f"- {args.format.upper()} file (dependents): {output_path_dependents}")
+    else:
+        print(f"No modules found that depend on '{module_name}'.")
+        output_path_dependents = None
+
+    # Extract and save the dependencies subgraph (modules that this one depends on)
+    print(f"\nExtracting dependencies subgraph for module '{module_name}' (modules it depends on)...")
+    G_dependencies = get_dependencies_subgraph(G_full, module_name)
+    dependencies_output_name = f"{module_name}_dependencies"
+    
+    if len(G_dependencies.nodes()) > 0:
+        dot_path_dependencies, output_path_dependencies = visualize_with_graphviz(G_dependencies, dependencies_output_name, output_dir, args.format)
+        print(f"- DOT file (dependencies): {dot_path_dependencies}")
+        if output_path_dependencies:
+            print(f"- {args.format.upper()} file (dependencies): {output_path_dependencies}")
+    else:
+        print(f"Module '{module_name}' has no dependencies.")
+        output_path_dependencies = None
+
+    # Generate adjacency lists if requested
     if args.list:
         list_path = args.list
         if not os.path.isabs(list_path):
             list_path = os.path.join(output_dir, list_path)
-        print(f"Generating adjacency list to {list_path}...")
-        generate_adjacency_list(G, list_path)
-
-    print(f"Visualizing dependency graph (format: {args.format})...")
-    dot_path, output_path = visualize_with_graphviz(G, args.output, output_dir, args.format)
-
-    print("\nFiles generated:")
-    print(f"- DOT file: {dot_path}")
-    if output_path:
-        print(f"- {args.format.upper()} file: {output_path}")
+        
+        # Generate adjacency list for dependents if they exist
+        if len(G_dependents.nodes()) > 0:
+            dependents_list_path = list_path.replace('.txt', '_dependents.txt') if list_path.endswith('.txt') else f"{list_path}_dependents"
+            print(f"Generating dependents adjacency list to {dependents_list_path}...")
+            generate_adjacency_list(G_dependents, dependents_list_path)
+        
+        # Generate adjacency list for dependencies if they exist
+        if len(G_dependencies.nodes()) > 0:
+            dependencies_list_path = list_path.replace('.txt', '_dependencies.txt') if list_path.endswith('.txt') else f"{list_path}_dependencies"
+            print(f"Generating dependencies adjacency list to {dependencies_list_path}...")
+            generate_adjacency_list(G_dependencies, dependencies_list_path)
 
     print("\nDone!")
-
-    # Ask if user wants to open the generated file
-    if not args.non_interactive and output_path and os.path.exists(output_path):
-        if input(f"\nWould you like to open the {args.format.upper()} file? (y/n): ").strip().lower() == 'y':
-            try:
-                if sys.platform == 'win32':
-                    os.startfile(output_path)
-                elif sys.platform == 'darwin':  # macOS
-                    subprocess.run(['open', output_path])
-                else:  # Linux and other Unix-like
-                    subprocess.run(['xdg-open', output_path])
-            except Exception as e:
-                print(f"Could not open the file: {e}")
 
 
 if __name__ == "__main__":

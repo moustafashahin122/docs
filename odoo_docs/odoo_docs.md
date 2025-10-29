@@ -21,6 +21,7 @@
 17. [Database Operations](#database-operations)
 18. [Many2many Relationships](#many2many-relationships)
 19. [py-spy Profiling](#py-spy-profiling)
+19- mailhog
 
 ---
 
@@ -2058,3 +2059,115 @@ sudo env "PATH=$PATH" py-spy top --pid 1947 --duration 300 > analysis.txt
 
 This comprehensive Odoo development documentation covers essential concepts, patterns, and examples for building robust Odoo applications. Each section provides practical code examples and explanations to help developers implement features effectively.
 
+# Mail hog
+
+
+encryption none
+localhost
+1025
+
+
+
+
+
+
+
+
+# onchange trigger
+
+        if onchange in ("1", "true"):
+            for method in self._onchange_methods.get(field_name, ()):
+                method_res = method(self)
+
+
+
+
+# compute
+
+   ############################################################################
+    #
+    # Descriptor methods
+    #
+
+    def __get__(self, record, owner):
+        """ return the value of field ``self`` on ``record`` """
+        if record is None:
+            return self         # the field is accessed through the owner class
+
+        if not record._ids:
+            # null record -> return the null value for this field
+            value = self.convert_to_cache(False, record, validate=False)
+            return self.convert_to_record(value, record)
+
+        env = record.env
+
+        # only a single record may be accessed
+        record.ensure_one()
+
+        if self.compute and self.store:
+            # process pending computations
+            self.recompute(record)
+
+        try:
+            value = env.cache.get(record, self)
+
+        except KeyError:
+            # behavior in case of cache miss:
+            #
+            #   on a real record:
+            #       stored -> fetch from database (computation done above)
+            #       not stored and computed -> compute
+            #       not stored and not computed -> default
+            #
+            #   on a new record w/ origin:
+            #       stored and not (computed and readonly) -> fetch from origin
+            #       stored and computed and readonly -> compute
+            #       not stored and computed -> compute
+            #       not stored and not computed -> default
+            #
+            #   on a new record w/o origin:
+            #       stored and computed -> compute
+            #       stored and not computed -> new delegate or default
+            #       not stored and computed -> compute
+            #       not stored and not computed -> default
+            #
+            if self.store and record.id:
+                # real record: fetch from database
+                recs = record._in_cache_without(self)
+                try:
+                    recs._fetch_field(self)
+                except AccessError:
+                    record._fetch_field(self)
+                if not env.cache.contains(record, self):
+                    raise MissingError("\n".join([
+                        _("Record does not exist or has been deleted."),
+                        _("(Record: %s, User: %s)") % (record, env.uid),
+                    ]))
+                value = env.cache.get(record, self)
+
+            elif self.store and record._origin and not (self.compute and self.readonly):
+                # new record with origin: fetch from origin, and assign the
+                # records to prefetch in cache (which is necessary for
+                # relational fields to "map" prefetching ids to their value)
+                recs = record._in_cache_without(self)
+                try:
+                    for rec in recs:
+                        if rec._origin:
+                            value = self.convert_to_cache(rec._origin[self.name], rec, validate=False)
+                            env.cache.set(rec, self, value)
+                    value = env.cache.get(record, self)
+                except (AccessError, MissingError):
+                    if len(recs) == 1:
+                        raise
+                    value = self.convert_to_cache(record._origin[self.name], record, validate=False)
+                    env.cache.set(record, self, value)
+
+            elif self.compute:
+                # non-stored field or new record without origin: compute
+                if env.is_protected(self, record):
+                    value = self.convert_to_cache(False, record, validate=False)
+                    env.cache.set(record, self, value)
+                else:
+                    recs = record if self.recursive else record._in_cache_without(self)
+                    try:
+                        self.compute_value(recs)
